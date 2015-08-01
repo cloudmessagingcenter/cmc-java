@@ -1,0 +1,13 @@
+# Make sure to ignore Eclipse files
+.classpath
+.project
+.settings
+
+# Where Maven compiles by default
+target
+
+# Java Files that should be ignored
+*.class
+
+# Package Files
+*.jar
