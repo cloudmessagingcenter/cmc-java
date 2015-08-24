@@ -1,13 +1,16 @@
-# Make sure to ignore Eclipse files
+# Ignore Eclipse files
 .classpath
 .project
 .settings
 
-# Where Maven compiles by default
+# Ignore checkstyle files
+.checkstyle
+
+# Ignore where Maven compiles by default
 target
 
-# Java Files that should be ignored
+# Ignore Java class files.
 *.class
 
-# Package Files
+# Ignore Package Files
 *.jar

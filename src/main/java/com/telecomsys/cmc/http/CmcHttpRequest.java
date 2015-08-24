@@ -7,25 +7,25 @@ import java.util.Map;
  * Class that holds the attributes required for all CMC requests.
  */
 public class CmcHttpRequest {
-    
+
     /**
      * The Request path.
      */
     private String path;
-    
+
     /**
      * Request parameters.
      */
     private Map<String, String> parameters;
-    
+
     /**
      * Timeout for the request.
      */
-    private Integer timeout;
-    
+    private int timeout;
+
     /**
      * Constructor.
-     * 
+     *
      * @param path Request path.
      */
     public CmcHttpRequest(String path) {
@@ -35,22 +35,29 @@ public class CmcHttpRequest {
 
     /**
      * Constructor.
-     * 
+     *
      * @param path Request path.
      * @param parameters Request parameters.
      * @param timeout timeout for the request.
-     */    
-    public CmcHttpRequest(String path, Map<String, String> parameters, Integer timeout) {
+     */
+    public CmcHttpRequest(String path, Map<String, String> parameters, int timeout) {
         this.path = path;
         this.parameters = parameters;
         this.timeout = timeout;
     }
-      
+
+    /**
+     * Add parameter to the CMC request parameters map.
+     *
+     * @param key Key for the CMC request parameter.
+     * @param value Value of the CMC request parameter.
+     * @return CMC request.
+     */
     public CmcHttpRequest addParameter(String key, String value) {
         this.parameters.put(key, value);
         return this;
-    }    
-    
+    }
+
     /**
      * @return the path
      */
@@ -82,15 +89,15 @@ public class CmcHttpRequest {
     /**
      * @return the timeout
      */
-    public Integer getTimeout() {
+    public int getTimeout() {
         return timeout;
     }
 
     /**
      * @param timeout the timeout to set
      */
-    public void setTimeout(Integer timeout) {
+    public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
-   
+
 }
