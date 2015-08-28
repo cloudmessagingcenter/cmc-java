@@ -24,6 +24,11 @@ public class CmcHttpRequest {
     private int timeout;
 
     /**
+     * The wrapper name for the message.
+     */
+    private String messageWrapperName;
+
+    /**
      * Constructor.
      *
      * @param path Request path.
@@ -98,6 +103,20 @@ public class CmcHttpRequest {
      */
     public void setTimeout(int timeout) {
         this.timeout = timeout;
+    }
+
+    /**
+     * @return the messageWrapperName
+     */
+    public String getMessageWrapperName() {
+        return messageWrapperName;
+    }
+
+    /**
+     * @param messageWrapperName the messageWrapperName to set
+     */
+    public void setMessageWrapperName(String messageWrapperName) {
+        this.messageWrapperName = messageWrapperName;
     }
 
 }

@@ -4,14 +4,14 @@
     <groupId>com.telecomsys.cmc</groupId>
     <artifactId>cmc-java</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    
+
     <properties>
         <java-version>1.7</java-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jackson.version>2.5.4</jackson.version>
         <slf4j.version>1.7.12</slf4j.version>
         <httpcomponents.version>4.4.1</httpcomponents.version>
-    </properties>    
+    </properties>
 
     <licenses>
         <license>
@@ -36,12 +36,28 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${jackson.version}</version>
-        </dependency> 
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
-        </dependency>               
+        </dependency>
+        
+        <!-- test scope dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>1.57</version>
+            <scope>test</scope>
+            <!-- Include everything below here if you have dependency conflicts -->
+            <classifier>standalone</classifier>
+        </dependency>        
     </dependencies>
 
     <build>
@@ -59,14 +75,19 @@
                     <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
-            
-            <!-- Specifically added to generate checksums -->
+
+            <!-- Specifically added to generate the implementation versions -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.1</version>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
                 <configuration>
-                    <createChecksum>true</createChecksum>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
 
@@ -83,8 +104,8 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>            
-            
+            </plugin>
+
             <!-- code style and formatting -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -132,7 +153,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>            
+            </plugin>
         </plugins>
     </build>
 

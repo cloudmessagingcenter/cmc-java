@@ -12,6 +12,13 @@ public class CMCException extends Exception {
 
     /**
      * Constructor.
+     */
+    public CMCException() {
+        super();
+    }
+
+    /**
+     * Constructor.
      *
      * @param ex Exception.
      */
