@@ -1,19 +1,12 @@
-package com.telecomsys.cmc;
+package com.telecomsys.cmc.api;
 
 import com.telecomsys.cmc.exception.CMCException;
-import com.telecomsys.cmc.http.ApacheHttpClientDelegate;
 import com.telecomsys.cmc.http.CmcHttpRequest;
-import com.telecomsys.cmc.http.HttpClientDelegate;
 
 /**
- * Default implementation of the interface used for communication with the CMC REST service.
+ * Main facade for messaging using the CMC REST API.
  */
-public class DefaultCmcClient implements CmcClient {
-
-    /**
-     * HTTP client instance.
-     */
-    private HttpClientDelegate httpClient;
+public class Messaging extends CmcBaseApi {
 
     /**
      * Constructor.
@@ -22,11 +15,18 @@ public class DefaultCmcClient implements CmcClient {
      * @param accountID the REST account identity.
      * @param authenticationToken the authentication token.
      */
-    public DefaultCmcClient(String baseUri, String accountID, String authenticationToken) {
-        httpClient = new ApacheHttpClientDelegate(baseUri, accountID, authenticationToken);
+    public Messaging(String baseUri, String accountID, String authenticationToken) {
+        super(baseUri, accountID, authenticationToken);
     }
 
-    @Override
+    /**
+     * Method to send a message using CMC REST API.
+     *
+     * @param destinations the MIN or groups to send the message to.
+     * @param keyword the keyword used to identify the REST connection.
+     * @param message the message to be sent.
+     * @throws CMCException CMC exception if errors.
+     */
     public void sendMessage(String destinations, String keyword, String message) throws CMCException {
 
         // Create the request with parameters.
