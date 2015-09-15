@@ -6,7 +6,12 @@ import com.telecomsys.cmc.http.CmcHttpRequest;
 /**
  * Main facade for messaging using the CMC REST API.
  */
-public class Messaging extends CmcBaseApi {
+public class MessagingApi extends CmcBaseApi {
+
+    /**
+     * Messaging End point.
+     */
+    public static final String MESSAGING_URL = "/messages";
 
     /**
      * Constructor.
@@ -15,7 +20,7 @@ public class Messaging extends CmcBaseApi {
      * @param accountID the REST account identity.
      * @param authenticationToken the authentication token.
      */
-    public Messaging(String baseUri, String accountID, String authenticationToken) {
+    public MessagingApi(String baseUri, String accountID, String authenticationToken) {
         super(baseUri, accountID, authenticationToken);
     }
 
@@ -30,10 +35,10 @@ public class Messaging extends CmcBaseApi {
     public void sendMessage(String destinations, String keyword, String message) throws CMCException {
 
         // Create the request with parameters.
-        CmcHttpRequest cmcRequest = new CmcHttpRequest("messages");
-        cmcRequest.addParameter("to", destinations);
-        cmcRequest.addParameter("from", keyword);
-        cmcRequest.addParameter("message", message);
+        CmcHttpRequest cmcRequest = new CmcHttpRequest(MESSAGING_URL);
+        cmcRequest.addBodyParameter("to", destinations);
+        cmcRequest.addBodyParameter("from", keyword);
+        cmcRequest.addBodyParameter("message", message);
         cmcRequest.setMessageWrapperName("sendmessage");
 
         // Send the message to CMC.

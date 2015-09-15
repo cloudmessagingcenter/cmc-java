@@ -14,9 +14,14 @@ public class CmcHttpRequest {
     private String path;
 
     /**
-     * Request parameters.
+     * Request Body Parameters.
      */
-    private Map<String, String> parameters;
+    private Map<String, Object> bodyParameters;
+
+    /**
+     * Request URL Parameters.
+     */
+    private Map<String, String> urlParameters;
 
     /**
      * Timeout for the request.
@@ -24,9 +29,9 @@ public class CmcHttpRequest {
     private int timeout;
 
     /**
-     * The wrapper name for the message.
+     * The wrapper name for the message. Default is empty, as it will disable root name wrapping.
      */
-    private String messageWrapperName;
+    private String messageWrapperName = "";
 
     /**
      * Constructor.
@@ -35,31 +40,44 @@ public class CmcHttpRequest {
      */
     public CmcHttpRequest(String path) {
         this.path = path;
-        this.parameters = new HashMap<String, String>();
+        this.bodyParameters = new HashMap<String, Object>();
+        this.urlParameters = new HashMap<String, String>();
     }
 
     /**
      * Constructor.
      *
      * @param path Request path.
-     * @param parameters Request parameters.
+     * @param bodyParameters Request Body Parameters.
      * @param timeout timeout for the request.
      */
-    public CmcHttpRequest(String path, Map<String, String> parameters, int timeout) {
+    public CmcHttpRequest(String path, Map<String, Object> bodyParameters, int timeout) {
         this.path = path;
-        this.parameters = parameters;
+        this.bodyParameters = bodyParameters;
         this.timeout = timeout;
     }
 
     /**
-     * Add parameter to the CMC request parameters map.
+     * Add parameter to the CMC request bodyParameters map.
      *
      * @param key Key for the CMC request parameter.
      * @param value Value of the CMC request parameter.
      * @return CMC request.
      */
-    public CmcHttpRequest addParameter(String key, String value) {
-        this.parameters.put(key, value);
+    public CmcHttpRequest addBodyParameter(String key, Object value) {
+        this.bodyParameters.put(key, value);
+        return this;
+    }
+
+    /**
+     * Add parameter to the CMC request urlParameters map.
+     *
+     * @param key Key for the CMC request parameter.
+     * @param value Value of the CMC request parameter.
+     * @return CMC request.
+     */
+    public CmcHttpRequest addUrlParameter(String key, String value) {
+        this.urlParameters.put(key, value);
         return this;
     }
 
@@ -78,17 +96,31 @@ public class CmcHttpRequest {
     }
 
     /**
-     * @return the parameters
+     * @return the bodyParameters
      */
-    public Map<String, String> getParameters() {
-        return parameters;
+    public Map<String, Object> getBodyParameters() {
+        return bodyParameters;
     }
 
     /**
-     * @param parameters the parameters to set
+     * @param bodyParameters the Body Parameters to set
      */
-    public void setParameters(Map<String, String> parameters) {
-        this.parameters = parameters;
+    public void setBodyParameters(Map<String, Object> bodyParameters) {
+        this.bodyParameters = bodyParameters;
+    }
+
+    /**
+     * @return the urlParameters
+     */
+    public Map<String, String> getUrlParameters() {
+        return urlParameters;
+    }
+
+    /**
+     * @param urlParameters the urlParameters to set
+     */
+    public void setUrlParameters(Map<String, String> urlParameters) {
+        this.urlParameters = urlParameters;
     }
 
     /**

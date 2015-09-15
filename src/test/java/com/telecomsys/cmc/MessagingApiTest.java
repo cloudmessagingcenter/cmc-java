@@ -5,17 +5,17 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.telecomsys.cmc.api.Messaging;
+import com.telecomsys.cmc.api.MessagingApi;
 import com.telecomsys.cmc.exception.CMCAuthenticationException;
 import com.telecomsys.cmc.exception.CMCException;
 import com.telecomsys.cmc.exception.CMCIOException;
 import com.telecomsys.cmc.exception.CMCServerException;
-import com.telecomsys.cmc.response.RestError;
+import com.telecomsys.cmc.response.RestResponse;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.*;
 
-public class MessagingTest {
+public class MessagingApiTest {
     
     /**
      * CMC REST user name (account ID).
@@ -35,20 +35,20 @@ public class MessagingTest {
     /**
      * CMC client instance.
      */
-    private Messaging messaging;
+    private MessagingApi messagingApi;
     
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(18089);
     
     @Before
     public void setup() {
-        messaging = new Messaging("http://localhost:18089/", USERNAME, PASSWORD);
+        messagingApi = new MessagingApi("http://localhost:18089", USERNAME, PASSWORD);
     }
     
     @Test(expected=CMCIOException.class)
     public void invalidHostTest() throws CMCException {
-        Messaging invalidMessaging = new Messaging("http://invalidHost:1234/", USERNAME, PASSWORD);
-        invalidMessaging.sendMessage("4102804827", REST_CONNECTION_KEYWORD, "Test message");
+        MessagingApi invalidMessagingApi = new MessagingApi("http://invalidHost:1234", USERNAME, PASSWORD);
+        invalidMessagingApi.sendMessage("4102804827", REST_CONNECTION_KEYWORD, "Test message");
     }
     
     @Test(expected=CMCAuthenticationException.class)
@@ -59,7 +59,7 @@ public class MessagingTest {
                     .withHeader("Content-Type", "text/html")
                     .withBody("This request requires HTTP authentication.")));
         
-        messaging.sendMessage("4102804827", REST_CONNECTION_KEYWORD, "Test message");
+        messagingApi.sendMessage("4102804827", REST_CONNECTION_KEYWORD, "Test message");
     }     
     
     @Test
@@ -71,9 +71,9 @@ public class MessagingTest {
                     .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"1010\",\"message\":\"Your message failed: Invalid from address.\"}}")));        
         
         try { 
-            messaging.sendMessage("4102804827", REST_CONNECTION_KEYWORD, "Test message");
+            messagingApi.sendMessage("4102804827", REST_CONNECTION_KEYWORD, "Test message");
         } catch (CMCServerException cmex) {
-            RestError error = cmex.getError();
+            RestResponse error = cmex.getError();
             assertEquals(error.getStatus(), "fail");
             assertEquals(error.getCode(), "1010");
             assertEquals(error.getMessage(), "Your message failed: Invalid from address.");
