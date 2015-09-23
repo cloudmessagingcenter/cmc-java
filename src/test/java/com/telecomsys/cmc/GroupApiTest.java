@@ -15,7 +15,6 @@ import com.telecomsys.cmc.exception.CMCIOException;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
 import com.telecomsys.cmc.model.Group;
 import com.telecomsys.cmc.response.RestResponse;
-import com.telecomsys.cmc.response.StatusResponse;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertEquals;
@@ -87,7 +86,6 @@ public class GroupApiTest {
         // Verify the request
         List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups")));
         assertEquals(requests.size(), 1);
-        System.out.println(requests.get(0).getBodyAsString());
         assertEquals(requests.get(0).getBodyAsString(), "{\"groups\":{\"groupname\":\"Test1\",\"groupdesc\":\"Test group\"}}");
     } 
 
@@ -111,7 +109,6 @@ public class GroupApiTest {
         // Verify the request
         List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups")));
         assertEquals(requests.size(), 1);
-        System.out.println(requests.get(0).getBodyAsString());
         assertEquals(requests.get(0).getBodyAsString(), "{\"groups\":{\"groupname\":\"Test1\",\"groupdesc\":\"Test group\"}}");
     }
     
