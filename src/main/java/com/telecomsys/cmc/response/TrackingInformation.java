@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Data model for a single notification.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Notification {
+public class TrackingInformation {
 
     /**
      * Message destination. This will be the min of the handset.

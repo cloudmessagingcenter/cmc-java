@@ -1,15 +1,22 @@
 package com.telecomsys.cmc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import com.telecomsys.cmc.api.MessagingApi;
 import com.telecomsys.cmc.exception.CMCAuthenticationException;
 import com.telecomsys.cmc.exception.CMCException;
 import com.telecomsys.cmc.exception.CMCIOException;
 import com.telecomsys.cmc.exception.CMCServerException;
+import com.telecomsys.cmc.http.HttpResponseWrapper;
+import com.telecomsys.cmc.model.Message;
+import com.telecomsys.cmc.response.NotificationsResponse;
 import com.telecomsys.cmc.response.RestResponse;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -48,7 +55,10 @@ public class MessagingApiTest {
     @Test(expected=CMCIOException.class)
     public void invalidHostTest() throws CMCException {
         MessagingApi invalidMessagingApi = new MessagingApi("http://invalidHost:1234", USERNAME, PASSWORD);
-        invalidMessagingApi.sendMessage("4102804827", REST_CONNECTION_KEYWORD, "Test message");
+        List<String> destinations = new ArrayList<String>();
+        destinations.add("4102804827");   
+        Message message = new Message(destinations, REST_CONNECTION_KEYWORD, "Test message");
+        invalidMessagingApi.sendMessage(message);        
     }
     
     @Test(expected=CMCAuthenticationException.class)
@@ -59,7 +69,10 @@ public class MessagingApiTest {
                     .withHeader("Content-Type", "text/html")
                     .withBody("This request requires HTTP authentication.")));
         
-        messagingApi.sendMessage("4102804827", REST_CONNECTION_KEYWORD, "Test message");
+        List<String> destinations = new ArrayList<String>();
+        destinations.add("4102804827");
+        Message message = new Message(destinations, REST_CONNECTION_KEYWORD, "Test message");
+        messagingApi.sendMessage(message);
     }     
     
     @Test
@@ -71,7 +84,10 @@ public class MessagingApiTest {
                     .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"1010\",\"message\":\"Your message failed: Invalid from address.\"}}")));        
         
         try { 
-            messagingApi.sendMessage("4102804827", REST_CONNECTION_KEYWORD, "Test message");
+            List<String> destinations = new ArrayList<String>();
+            destinations.add("4102804827");
+            Message message = new Message(destinations, REST_CONNECTION_KEYWORD, "Test message");
+            messagingApi.sendMessage(message);
         } catch (CMCServerException cmex) {
             RestResponse error = cmex.getError();
             assertEquals(error.getStatus(), "fail");
@@ -79,5 +95,27 @@ public class MessagingApiTest {
             assertEquals(error.getMessage(), "Your message failed: Invalid from address.");
         }
     }
+    
+    @Test
+    public void sendMessagesSingleDestination() throws CMCException {
+        stubFor(post(urlEqualTo("/messages"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\":\"success\",\"notifications\":{\"to\":[\"4102804827\"],\"from\":\"scsrest\",\"trackinginformation\":{\"destination\":\"4102804827\",\"messagestatus\":\"Message Accepted\",\"messageID\":\"GW1_AVvciGlHRM32pw0Q\",\"messagetext\":\"Test message\"}]}}}")));        
+        
+        List<String> destinations = new ArrayList<String>();
+        destinations.add("4102804827"); 
+        Message message = new Message(destinations, REST_CONNECTION_KEYWORD, "Test message");
+        HttpResponseWrapper<NotificationsResponse> response = messagingApi.sendMessage(message);
+        
+        // Verify the response
+        assertEquals(response.getHttpStatusCode(), 200);
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/messages")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "{\"sendmessage\":{\"message\":\"Test message\",\"to\":[\"4102804827\"],\"from\":\"scsrest\"}}");
+    }    
     
 }

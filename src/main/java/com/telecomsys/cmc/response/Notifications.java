@@ -23,9 +23,10 @@ public class Notifications {
     private String fromAddress = null;
 
     /**
-     * list - list of message replies.
+     * list - list of tracking information for the message.
      */
-    private List<Notification> trackinginformation = null;
+    @JsonProperty("trackinginformation")
+    private List<TrackingInformation> trackingInformation = null;
 
     /**
      * Default Constructor.
@@ -38,8 +39,8 @@ public class Notifications {
      *
      * @param notifications a list of  notifications
      */
-    public Notifications(List<Notification> notifications) {
-        this.trackinginformation = notifications;
+    public Notifications(List<TrackingInformation> notifications) {
+        this.trackingInformation = notifications;
     }
 
     /**
@@ -71,17 +72,17 @@ public class Notifications {
     }
 
     /**
-     * @return the trackinginformation
+     * @return the trackingInformation
      */
-    public List<Notification> getTrackinginformation() {
-        return trackinginformation;
+    public List<TrackingInformation> getTrackingInformation() {
+        return trackingInformation;
     }
 
     /**
-     * @param trackinginformation the trackinginformation to set
+     * @param trackingInformation the trackingInformation to set
      */
-    public void setTrackinginformation(List<Notification> trackinginformation) {
-        this.trackinginformation = trackinginformation;
+    public void setTrackingInformation(List<TrackingInformation> trackingInformation) {
+        this.trackingInformation = trackingInformation;
     }
 
 }

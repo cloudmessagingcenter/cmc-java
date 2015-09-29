@@ -16,48 +16,6 @@ public class Contact {
     private String cellNumber;
 
     /**
-     * @return the cellNumber
-     */
-    public String getCellNumber() {
-        return cellNumber;
-    }
-
-    /**
-     * @param cellNumber the cellNumber to set
-     */
-    public void setCellNumber(String cellNumber) {
-        this.cellNumber = cellNumber;
-    }
-
-    /**
-     * @return the firstName
-     */
-    public String getFirstName() {
-        return firstName;
-    }
-
-    /**
-     * @param firstName the firstName to set
-     */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    /**
-     * @return the lastName
-     */
-    public String getLastName() {
-        return lastName;
-    }
-
-    /**
-     * @param lastName the lastName to set
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    /**
      * First Name.
      */
     @JsonProperty("first")
@@ -128,6 +86,48 @@ public class Contact {
      * Default constructor.
      */
     public Contact() {
+    }
+
+    /**
+     * @return the cellNumber
+     */
+    public String getCellNumber() {
+        return cellNumber;
+    }
+
+    /**
+     * @param cellNumber the cellNumber to set
+     */
+    public void setCellNumber(String cellNumber) {
+        this.cellNumber = cellNumber;
+    }
+
+    /**
+     * @return the firstName
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * @param firstName the firstName to set
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * @return the lastName
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * @param lastName the lastName to set
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     /**

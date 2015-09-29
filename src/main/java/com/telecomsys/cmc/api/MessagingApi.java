@@ -3,6 +3,7 @@ package com.telecomsys.cmc.api;
 import com.telecomsys.cmc.exception.CMCException;
 import com.telecomsys.cmc.http.CmcHttpRequest;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
+import com.telecomsys.cmc.model.Message;
 import com.telecomsys.cmc.response.NotificationsResponse;
 
 /**
@@ -29,20 +30,30 @@ public class MessagingApi extends CmcBaseApi {
     /**
      * Method to send a message using CMC REST API.
      *
-     * @param destinations the MIN or groups to send the message to.
-     * @param keyword the keyword used to identify the REST connection.
-     * @param message the message to be sent.
+     * @param message the Message model that has all message details.
      * @return HttpResponseWrapper http response wrapper with the response.
      * @throws CMCException CMC exception if errors.
      */
-    public HttpResponseWrapper<NotificationsResponse> sendMessage(String destinations, String keyword, String message)
-            throws CMCException {
+    public HttpResponseWrapper<NotificationsResponse> sendMessage(Message message) throws CMCException {
 
         // Create the request with parameters.
         CmcHttpRequest cmcRequest = new CmcHttpRequest(MESSAGING_URL);
-        cmcRequest.addBodyParameter("to", destinations);
-        cmcRequest.addBodyParameter("from", keyword);
-        cmcRequest.addBodyParameter("message", message);
+        cmcRequest.addBodyParameter("to", message.getDestinations());
+        cmcRequest.addBodyParameter("from", message.getKeyword());
+        cmcRequest.addBodyParameter("message", message.getMessage());
+
+        String subject = message.getSubject();
+        if (subject != null && subject.length() > 0) {
+            cmcRequest.addBodyParameter("subject", subject);
+        }
+        String notifyURL = message.getNotifyURL();
+        if (notifyURL != null && notifyURL.length() > 0) {
+            cmcRequest.addBodyParameter("notifyURL", notifyURL);
+        }
+        Integer replyexpiry = message.getReplyExpiry();
+        if (replyexpiry != null) {
+            cmcRequest.addBodyParameter("replyexpiry", replyexpiry);
+        }
         cmcRequest.setMessageWrapperName("sendmessage");
 
         // Send the message to CMC.
