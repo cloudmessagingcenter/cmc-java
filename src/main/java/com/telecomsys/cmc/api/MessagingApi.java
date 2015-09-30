@@ -17,6 +17,11 @@ public class MessagingApi extends CmcBaseApi {
     public static final String MESSAGING_URL = "/messages";
 
     /**
+     * Messaging End point.
+     */
+    public static final String NOTIFICATIONS_URL = "/notifications";
+
+    /**
      * Constructor.
      *
      * @param baseUri base URL to connect to the CMC REST service.
@@ -58,6 +63,26 @@ public class MessagingApi extends CmcBaseApi {
 
         // Send the message to CMC.
         return httpClient.doPost(cmcRequest, NotificationsResponse.class);
+    }
+
+    /**
+     * Method to retrieve delivery notifications using CMC REST API.
+     *
+     * @param trackingID the unique job tracking ID returned during a send or schedule message.
+     * @return HttpResponseWrapper http response wrapper with the response.
+     * @throws CMCException CMC exception if errors.
+     */
+    public HttpResponseWrapper<NotificationsResponse> getDeliveryNotifications(String trackingID) throws CMCException {
+
+        // Append the matrix parameters
+        StringBuilder sb = new StringBuilder();
+        sb.append(NOTIFICATIONS_URL).append("/").append(trackingID);
+
+        // Create the request with parameters.
+        CmcHttpRequest cmcRequest = new CmcHttpRequest(sb.toString());
+
+        // Send the message to CMC.
+        return httpClient.doGet(cmcRequest, NotificationsResponse.class);
     }
 
 }

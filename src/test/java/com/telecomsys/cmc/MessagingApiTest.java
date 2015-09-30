@@ -165,6 +165,59 @@ public class MessagingApiTest {
         List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/messages")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "{\"sendmessage\":{\"message\":\"Test message\",\"to\":[\"4102804827\",\"4102804828\"],\"notifyURL\":\"http://customer.com/notifications\",\"replyexpiry\":60,\"from\":\"scsrest\"}}");
+    } 
+    
+    @Test
+    public void getDeliveryNotificationInvalidTrackingID() throws CMCException {
+        stubFor(get(urlMatching("/notifications/[0-9A-Za-z]+"))
+                .willReturn(aResponse()
+                    .withStatus(500)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"5001\",\"message\":\"Server error retrieving replies for message AewVvciGlHRM31jg0K.\"}}")));
+        
+        try {
+            messagingApi.getDeliveryNotifications("AewVvciGlHRM31jg0K");        
+        } catch (CMCServerException cmex) {
+            // Verify the response.
+            RestResponse error = cmex.getError();
+            assertEquals(error.getStatus(), "fail");
+            assertEquals(error.getCode(), "5001");
+        }
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/notifications/[0-9A-Za-z]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");          
+    }
+    
+    @Test
+    public void getDeliveryNotificationValidTrackingID() throws CMCException {
+        stubFor(get(urlMatching("/notifications/[0-9A-Za-z]+"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\":\"success\",\"notifications\":{\"to\":[\"4102804827\"],\"from\":\"scsrest\",\"trackinginformation\":[{\"destination\":\"4102804827\",\"messagestatus\":\"Message Accepted\",\"messageID\":\"GW1_AVvciGlHRM32pw0Q\",\"messagetext\":\"Test message\"}]}}}")));        
+             
+        HttpResponseWrapper<NotificationsResponse> response = messagingApi.getDeliveryNotifications("AewVvciGlHRM31jg0K");
+        
+        // Verify the response
+        assertEquals(response.getHttpStatusCode(), 200);
+        Notifications notifications = response.getResponseBody().getNotifications();
+        assertEquals(notifications.getFromAddress(),"scsrest");
+        assertEquals(notifications.getTo().size(),1);
+        assertEquals(notifications.getTo().get(0),"4102804827");
+        List<TrackingInformation> trackingInformation = notifications.getTrackingInformation();
+        assertEquals(trackingInformation.size(),1);
+        assertEquals(trackingInformation.get(0).getDestination(),"4102804827");
+        assertEquals(trackingInformation.get(0).getMessageID(),"GW1_AVvciGlHRM32pw0Q");
+        assertEquals(trackingInformation.get(0).getMessageText(),"Test message");
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/notifications/[0-9A-Za-z]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");
+  
+    
     }    
     
 }
