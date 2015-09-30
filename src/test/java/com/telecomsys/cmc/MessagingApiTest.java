@@ -16,8 +16,10 @@ import com.telecomsys.cmc.exception.CMCIOException;
 import com.telecomsys.cmc.exception.CMCServerException;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
 import com.telecomsys.cmc.model.Message;
+import com.telecomsys.cmc.response.Notifications;
 import com.telecomsys.cmc.response.NotificationsResponse;
 import com.telecomsys.cmc.response.RestResponse;
+import com.telecomsys.cmc.response.TrackingInformation;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.*;
@@ -102,7 +104,7 @@ public class MessagingApiTest {
                 .willReturn(aResponse()
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
-                    .withBody("{\"response\":{\"status\":\"success\",\"notifications\":{\"to\":[\"4102804827\"],\"from\":\"scsrest\",\"trackinginformation\":{\"destination\":\"4102804827\",\"messagestatus\":\"Message Accepted\",\"messageID\":\"GW1_AVvciGlHRM32pw0Q\",\"messagetext\":\"Test message\"}]}}}")));        
+                    .withBody("{\"response\":{\"status\":\"success\",\"notifications\":{\"to\":[\"4102804827\"],\"from\":\"scsrest\",\"trackinginformation\":[{\"destination\":\"4102804827\",\"messagestatus\":\"Message Accepted\",\"messageID\":\"GW1_AVvciGlHRM32pw0Q\",\"messagetext\":\"Test message\"}]}}}")));        
         
         List<String> destinations = new ArrayList<String>();
         destinations.add("4102804827"); 
@@ -111,6 +113,15 @@ public class MessagingApiTest {
         
         // Verify the response
         assertEquals(response.getHttpStatusCode(), 200);
+        Notifications notifications = response.getResponseBody().getNotifications();
+        assertEquals(notifications.getFromAddress(),"scsrest");
+        assertEquals(notifications.getTo().size(),1);
+        assertEquals(notifications.getTo().get(0),"4102804827");
+        List<TrackingInformation> trackingInformation = notifications.getTrackingInformation();
+        assertEquals(trackingInformation.size(),1);
+        assertEquals(trackingInformation.get(0).getDestination(),"4102804827");
+        assertEquals(trackingInformation.get(0).getMessageID(),"GW1_AVvciGlHRM32pw0Q");
+        assertEquals(trackingInformation.get(0).getMessageText(),"Test message");
         
         // Verify the request
         List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/messages")));
