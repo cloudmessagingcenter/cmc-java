@@ -16,6 +16,9 @@ import com.telecomsys.cmc.exception.CMCIOException;
 import com.telecomsys.cmc.exception.CMCServerException;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
 import com.telecomsys.cmc.model.Message;
+import com.telecomsys.cmc.response.DeliveryReceipt;
+import com.telecomsys.cmc.response.DeliveryReceiptResponse;
+import com.telecomsys.cmc.response.MessageStatus;
 import com.telecomsys.cmc.response.Notifications;
 import com.telecomsys.cmc.response.NotificationsResponse;
 import com.telecomsys.cmc.response.RestResponse;
@@ -171,18 +174,16 @@ public class MessagingApiTest {
     public void getDeliveryNotificationInvalidTrackingID() throws CMCException {
         stubFor(get(urlMatching("/notifications/[0-9A-Za-z]+"))
                 .willReturn(aResponse()
-                    .withStatus(500)
+                    .withStatus(404)
                     .withHeader("Content-Type", "application/json")
-                    .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"5001\",\"message\":\"Server error retrieving replies for message AewVvciGlHRM31jg0K.\"}}")));
+                    .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"5001\",\"message\":\"Tracking ID Not Found -- Notifications AewVvciGlHRM31jg0K.\"}}")));
         
-        try {
-            messagingApi.getDeliveryNotifications("AewVvciGlHRM31jg0K");        
-        } catch (CMCServerException cmex) {
-            // Verify the response.
-            RestResponse error = cmex.getError();
-            assertEquals(error.getStatus(), "fail");
-            assertEquals(error.getCode(), "5001");
-        }
+        HttpResponseWrapper<NotificationsResponse> response = messagingApi.getDeliveryNotifications("AewVvciGlHRM31jg0K");
+        
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 404);
+        assertEquals(response.getResponseBody().getStatus(), "fail");   
+        assertEquals(response.getResponseBody().getCode(), "5001");
         
         // Verify the request
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/notifications/[0-9A-Za-z]+")));
@@ -216,8 +217,65 @@ public class MessagingApiTest {
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/notifications/[0-9A-Za-z]+")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "");
-  
+    } 
     
-    }    
+    @Test
+    public void getDeliveryReceiptInvalidMessageID() throws CMCException {
+        stubFor(get(urlMatching("/receipts/[0-9A-Za-z,]+"))
+                .willReturn(aResponse()
+                    .withStatus(404)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"2003\",\"message\":\"Message ID Not Found -- Receipts AewVvciGlHRM31jg0K.\"}}")));
+        
+        List<String> messageIds = new ArrayList<String>();
+        messageIds.add("AewVvciGlHRM31jg0K");
+        HttpResponseWrapper<DeliveryReceiptResponse> response = messagingApi.getDeliveryReceipts(messageIds);
+
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 404);
+        assertEquals(response.getResponseBody().getStatus(), "fail");   
+        assertEquals(response.getResponseBody().getCode(), "2003");
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/receipts/[0-9A-Za-z,]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");          
+    }
+    
+    @Test
+    public void getDeliveryReceiptValidMessageID() throws CMCException {
+        stubFor(get(urlMatching("/receipts/[0-9A-Za-z,_]+"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\":\"success\",\"deliveryreceipt\":{\"deliverystatuslist\":[{\"deliverydate\":\"2014-05-28T00:00Z\",\"deliverystatus\":\"Undeliverable by Gateway\",\"messageID\":\"GW1_EwGohZtGQpmh8lGB\",\"to\":\"14106277808\"},{\"deliverydate\":\"2014-06-12T00:00Z\",\"deliverystatus\":\"Delivered to Handset\",\"messageID\":\"GW1_EwBpkTJGkGVEsZ1U\",\"to\":\"14103334444\"}]}}}")));
+        
+        List<String> messageIds = new ArrayList<String>();
+        messageIds.add("GW1_EwGohZtGQpmh8lGB");
+        messageIds.add("GW1_EwBpkTJGkGVEsZ1U");
+        HttpResponseWrapper<DeliveryReceiptResponse> response = messagingApi.getDeliveryReceipts(messageIds);
+
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 200);
+        assertEquals(response.getResponseBody().getStatus(),"success");
+        DeliveryReceipt deliveryReceipt = response.getResponseBody().getDeliveryReceipt();
+        List<MessageStatus> deliverystatuslist = deliveryReceipt.getDeliverystatuslist();
+        assertEquals(deliverystatuslist.size(),2);
+        
+        assertEquals(deliverystatuslist.get(0).getMin(),"14106277808");
+        assertEquals(deliverystatuslist.get(0).getDeliveryStatus(),"Undeliverable by Gateway");
+        assertEquals(deliverystatuslist.get(0).getMessageID(),"GW1_EwGohZtGQpmh8lGB");
+        assertEquals(deliverystatuslist.get(0).getDeliveryDate(),"2014-05-28T00:00Z");
+        
+        assertEquals(deliverystatuslist.get(1).getMin(),"14103334444");
+        assertEquals(deliverystatuslist.get(1).getDeliveryStatus(),"Delivered to Handset");
+        assertEquals(deliverystatuslist.get(1).getMessageID(),"GW1_EwBpkTJGkGVEsZ1U");
+        assertEquals(deliverystatuslist.get(1).getDeliveryDate(),"2014-06-12T00:00Z");
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/receipts/[0-9A-Za-z,_]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");          
+    }     
     
 }
