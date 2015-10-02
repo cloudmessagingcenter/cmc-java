@@ -32,3 +32,4 @@ public class DeliveryReceiptResponse extends RestResponse {
         this.deliveryReceipt = deliveryReceipt;
     }
 }
+
