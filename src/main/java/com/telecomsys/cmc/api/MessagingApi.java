@@ -7,6 +7,7 @@ import com.telecomsys.cmc.http.CmcHttpRequest;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
 import com.telecomsys.cmc.model.Message;
 import com.telecomsys.cmc.response.DeliveryReceiptResponse;
+import com.telecomsys.cmc.response.MessageRepliesResponse;
 import com.telecomsys.cmc.response.NotificationsResponse;
 import com.telecomsys.cmc.utils.StringUtils;
 
@@ -29,6 +30,11 @@ public class MessagingApi extends CmcBaseApi {
      * Delivery Receipts End point.
      */
     public static final String RECEIPTS_URL = "/receipts";
+
+    /**
+     * Replies End point.
+     */
+    public static final String REPLIES_URL = "/replies";
 
     /**
      * Constructor.
@@ -97,7 +103,7 @@ public class MessagingApi extends CmcBaseApi {
     /**
      * Method to retrieve delivery receipts using CMC REST API.
      *
-     * @param messageIDs the message tracking IDs for which a delivery receipt is requested.
+     * @param messageIDs the message IDs for which a delivery receipt is requested.
      * @return HttpResponseWrapper http response wrapper with the response.
      * @throws CMCException CMC exception if errors.
      */
@@ -118,6 +124,27 @@ public class MessagingApi extends CmcBaseApi {
 
         // Send the message to CMC.
         return httpClient.doGet(cmcRequest, DeliveryReceiptResponse.class);
+    }
+
+    /**
+     * Method to retrieve replies using CMC REST API.
+     *
+     * @param messageID the message ID for which the replies is requested.
+     * @return HttpResponseWrapper http response wrapper with the response.
+     * @throws CMCException CMC exception if errors.
+     */
+    public HttpResponseWrapper<MessageRepliesResponse> getReplies(String messageID)
+            throws CMCException {
+
+        // Append the matrix parameters
+        StringBuilder sb = new StringBuilder();
+        sb.append(REPLIES_URL).append("/").append(messageID);
+
+        // Create the request with parameters.
+        CmcHttpRequest cmcRequest = new CmcHttpRequest(sb.toString());
+
+        // Send the message to CMC.
+        return httpClient.doGet(cmcRequest, MessageRepliesResponse.class);
     }
 
 }
