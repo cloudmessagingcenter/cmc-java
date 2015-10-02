@@ -14,4 +14,4 @@ target
 
 # Ignore Package Files
 *.jar
-/bin
+
