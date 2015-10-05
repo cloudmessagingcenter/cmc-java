@@ -6,6 +6,7 @@ import com.telecomsys.cmc.exception.CMCException;
 import com.telecomsys.cmc.http.CmcHttpRequest;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
 import com.telecomsys.cmc.model.Message;
+import com.telecomsys.cmc.model.ProgramReply;
 import com.telecomsys.cmc.response.DeliveryReceiptResponse;
 import com.telecomsys.cmc.response.MessageRepliesResponse;
 import com.telecomsys.cmc.response.NotificationsResponse;
@@ -32,9 +33,14 @@ public class MessagingApi extends CmcBaseApi {
     public static final String RECEIPTS_URL = "/receipts";
 
     /**
-     * Replies End point.
+     * Dynamic Replies End point.
      */
     public static final String REPLIES_URL = "/replies";
+
+    /**
+     * Program Replies End point.
+     */
+    public static final String PROGRAM_REPLIES_URL = "/programreplies";
 
     /**
      * Constructor.
@@ -139,6 +145,42 @@ public class MessagingApi extends CmcBaseApi {
         // Append the matrix parameters
         StringBuilder sb = new StringBuilder();
         sb.append(REPLIES_URL).append("/").append(messageID);
+
+        // Create the request with parameters.
+        CmcHttpRequest cmcRequest = new CmcHttpRequest(sb.toString());
+
+        // Send the message to CMC.
+        return httpClient.doGet(cmcRequest, MessageRepliesResponse.class);
+    }
+
+    /**
+     * Method to retrieve program replies using CMC REST API.
+     *
+     * @param programReply the program reply model which includes options for program reply.
+     * @return HttpResponseWrapper http response wrapper with the response.
+     * @throws CMCException CMC exception if errors.
+     */
+    public HttpResponseWrapper<MessageRepliesResponse> getProgramReplies(ProgramReply programReply)
+            throws CMCException {
+
+        // Append the matrix parameters
+        StringBuilder sb = new StringBuilder();
+        sb.append(PROGRAM_REPLIES_URL).append("/").append(programReply.getKeyword());
+
+        // Check if the minutes are set. If it's set then add 'since'.
+        String minutes = programReply.getMinutes();
+        if (minutes != null) {
+            sb.append("/").append("since");
+        }
+
+        String mdnsStr = StringUtils.convertStringListToCSV(programReply.getDestinations());
+        if (mdnsStr != null) {
+            sb.append("/").append(mdnsStr);
+        }
+
+        if (minutes != null) {
+            sb.append("?").append("minutes").append(minutes);
+        }
 
         // Create the request with parameters.
         CmcHttpRequest cmcRequest = new CmcHttpRequest(sb.toString());

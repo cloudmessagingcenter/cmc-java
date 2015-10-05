@@ -18,6 +18,9 @@ import com.telecomsys.cmc.http.HttpResponseWrapper;
 import com.telecomsys.cmc.model.Message;
 import com.telecomsys.cmc.response.DeliveryReceipt;
 import com.telecomsys.cmc.response.DeliveryReceiptResponse;
+import com.telecomsys.cmc.response.MessageReplies;
+import com.telecomsys.cmc.response.MessageRepliesResponse;
+import com.telecomsys.cmc.response.MessageReply;
 import com.telecomsys.cmc.response.MessageStatus;
 import com.telecomsys.cmc.response.Notifications;
 import com.telecomsys.cmc.response.NotificationsResponse;
@@ -276,6 +279,57 @@ public class MessagingApiTest {
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/receipts/[0-9A-Za-z,_]+")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "");          
-    }     
+    }
+    
+    @Test
+    public void getRepliesInvalidMessageID() throws CMCException {
+        stubFor(get(urlMatching("/replies/[0-9A-Za-z]+"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\":\"success\",\"replies\":{\"numberofreplies\":0}}}")));
+        
+        HttpResponseWrapper<MessageRepliesResponse> response = messagingApi.getReplies("AewVvciGlHRM31jg0K");
+
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 200);
+        assertEquals(response.getResponseBody().getStatus(), "success");   
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/replies/[0-9A-Za-z]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");          
+    }
+    
+    @Test
+    public void getRepliesValidMessageID() throws CMCException {
+        stubFor(get(urlMatching("/replies/[0-9A-Za-z_]+"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\": \"success\",\"replies\":{\"numberofreplies\": 2,\"replylist\":[{\"from\": \"14106277808\",\"text\": \"Reply back\",\"date\": \"2015-07-13T00:00Z\"},{\"from\": \"14106277809\",\"text\":\"Reply back again\",\"date\":\"2015-09-13T00:00Z\"}]}}}")));
+        
+        HttpResponseWrapper<MessageRepliesResponse> response = messagingApi.getReplies("GW1_EwGohZtGQpmh8lGB");
+
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 200);
+        assertEquals(response.getResponseBody().getStatus(),"success");
+        MessageReplies messageReplies = response.getResponseBody().getMessageReplies();
+        List<MessageReply> replylist = messageReplies.getReplies();
+        assertEquals(replylist.size(),2);
+        
+        assertEquals(replylist.get(0).getMin(),"14106277808");
+        assertEquals(replylist.get(0).getMsgText(),"Reply back");
+        assertEquals(replylist.get(0).getReplyDate(),"2015-07-13T00:00Z");
+        
+        assertEquals(replylist.get(1).getMin(),"14106277809");
+        assertEquals(replylist.get(1).getMsgText(),"Reply back again");
+        assertEquals(replylist.get(1).getReplyDate(),"2015-09-13T00:00Z");
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/replies/[0-9A-Za-z_]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");          
+    }    
     
 }
