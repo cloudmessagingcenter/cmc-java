@@ -95,7 +95,12 @@ public class ApacheHttpClientDelegate implements HttpClientDelegate {
     static {
         String cmcVersion = ApacheHttpClientDelegate.class.getPackage().getImplementationVersion();
         if (cmcVersion == null) {
-            cmcVersion = "CMC-development";
+            if (cmcVersion == null) {
+                cmcVersion = ApacheHttpClientDelegate.class.getPackage().getSpecificationVersion();
+                if (cmcVersion == null) {
+                    cmcVersion = "CMC-development";
+                }
+            }
         }
         CMC_VERSION = cmcVersion;
     }
