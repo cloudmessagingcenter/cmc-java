@@ -179,7 +179,7 @@ public class MessagingApi extends CmcBaseApi {
         }
 
         if (minutes != null) {
-            sb.append("?").append("minutes").append(minutes);
+            sb.append("?").append("minutes=").append(minutes);
         }
 
         // Create the request with parameters.

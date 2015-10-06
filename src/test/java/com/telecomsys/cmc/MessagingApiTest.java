@@ -16,6 +16,7 @@ import com.telecomsys.cmc.exception.CMCIOException;
 import com.telecomsys.cmc.exception.CMCServerException;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
 import com.telecomsys.cmc.model.Message;
+import com.telecomsys.cmc.model.ProgramReply;
 import com.telecomsys.cmc.response.DeliveryReceipt;
 import com.telecomsys.cmc.response.DeliveryReceiptResponse;
 import com.telecomsys.cmc.response.MessageReplies;
@@ -330,6 +331,104 @@ public class MessagingApiTest {
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/replies/[0-9A-Za-z_]+")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "");          
+    }
+    
+    @Test
+    public void getProgramRepliesInvalidProgram() throws CMCException {
+        stubFor(get(urlMatching("/programreplies/[0-9A-Za-z]+"))
+                .willReturn(aResponse()
+                    .withStatus(404)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"4003\",\"message\":\"Program not found 1.\"}}")));
+        
+        ProgramReply programReply = new ProgramReply("1");
+        HttpResponseWrapper<MessageRepliesResponse> response = messagingApi.getProgramReplies(programReply);
+
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 404);
+        assertEquals(response.getResponseBody().getStatus(), "fail");
+        assertEquals(response.getResponseBody().getCode(), "4003");
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");          
     }    
+    
+    @Test
+    public void getProgramRepliesInvalidProgramWithMdns() throws CMCException {
+        stubFor(get(urlMatching("/programreplies/[0-9A-Za-z]+/[0-9,]+"))
+                .willReturn(aResponse()
+                    .withStatus(404)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"4003\",\"message\":\"Program not found 1.\"}}")));
+        
+        ProgramReply programReply = new ProgramReply("1");
+        List<String> destinations = new ArrayList<String>();
+        destinations.add("4102804827");
+        destinations.add("4102804828"); 
+        programReply.setDestinations(destinations);
+        HttpResponseWrapper<MessageRepliesResponse> response = messagingApi.getProgramReplies(programReply);
+
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 404);
+        assertEquals(response.getResponseBody().getStatus(), "fail");
+        assertEquals(response.getResponseBody().getCode(), "4003");
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+/[0-9,]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");
+    }
+    
+    @Test
+    public void getProgramRepliesInvalidProgramWithMinutes() throws CMCException {
+        stubFor(get(urlMatching("/programreplies/[0-9A-Za-z]+/since%3Fminutes=[0-9]+"))
+                .willReturn(aResponse()
+                    .withStatus(404)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"4003\",\"message\":\"Program not found 1.\"}}")));
+        
+        ProgramReply programReply = new ProgramReply("1");
+        programReply.setMinutes("7");
+        HttpResponseWrapper<MessageRepliesResponse> response = messagingApi.getProgramReplies(programReply);
+
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 404);
+        assertEquals(response.getResponseBody().getStatus(), "fail");
+        assertEquals(response.getResponseBody().getCode(), "4003");
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+/since%3Fminutes=[0-9]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");          
+    }    
+    
+    @Test
+    public void getProgramRepliesInvalidProgramWithMdnsAndMinutes() throws CMCException {
+        stubFor(get(urlMatching("/programreplies/[0-9A-Za-z]+/since/[0-9,]+%3Fminutes=[0-9]+"))
+                .willReturn(aResponse()
+                    .withStatus(404)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"4003\",\"message\":\"Program not found 1.\"}}")));
+        
+        ProgramReply programReply = new ProgramReply("1");
+        List<String> destinations = new ArrayList<String>();
+        destinations.add("4102804827");
+        destinations.add("4102804828"); 
+        programReply.setDestinations(destinations);
+        programReply.setMinutes("7");
+        HttpResponseWrapper<MessageRepliesResponse> response = messagingApi.getProgramReplies(programReply);
+
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 404);
+        assertEquals(response.getResponseBody().getStatus(), "fail");
+        assertEquals(response.getResponseBody().getCode(), "4003");
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+/since/[0-9,]+%3Fminutes=[0-9]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");          
+    }      
     
 }
