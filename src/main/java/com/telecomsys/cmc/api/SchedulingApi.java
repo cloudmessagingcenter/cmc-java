@@ -63,7 +63,7 @@ public class SchedulingApi extends CmcBaseApi {
      * @return HttpResponseWrapper http response wrapper with the response.
      * @throws CMCException CMC exception if errors.
      */
-    public HttpResponseWrapper<RestResponse> deleteContacts(List<String> messageIds) throws CMCException {
+    public HttpResponseWrapper<RestResponse> deleteScheduledMessages(List<String> messageIds) throws CMCException {
 
         // Append the matrix parameters
         StringBuilder sb = new StringBuilder();
