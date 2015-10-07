@@ -353,6 +353,38 @@ public class MessagingApiTest {
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "");          
+    }
+    
+    @Test
+    public void getProgramRepliesValidProgram() throws CMCException {
+        stubFor(get(urlMatching("/programreplies/[0-9A-Za-z]+"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\": \"success\",\"replies\":{\"numberofreplies\": 2,\"replylist\":[{\"from\": \"14106277808\",\"text\": \"Reply back\",\"date\": \"2015-07-13T00:00Z\"},{\"from\": \"14106277809\",\"text\":\"Reply back again\",\"date\":\"2015-09-13T00:00Z\"}]}}}")));
+        
+        ProgramReply programReply = new ProgramReply("GW1EwGohZtGQpmh8lGB");
+        HttpResponseWrapper<MessageRepliesResponse> response = messagingApi.getProgramReplies(programReply);
+
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 200);
+        assertEquals(response.getResponseBody().getStatus(),"success");
+        MessageReplies messageReplies = response.getResponseBody().getMessageReplies();
+        List<MessageReply> replylist = messageReplies.getReplies();
+        assertEquals(replylist.size(),2);
+        
+        assertEquals(replylist.get(0).getMin(),"14106277808");
+        assertEquals(replylist.get(0).getMsgText(),"Reply back");
+        assertEquals(replylist.get(0).getReplyDate(),"2015-07-13T00:00Z");
+        
+        assertEquals(replylist.get(1).getMin(),"14106277809");
+        assertEquals(replylist.get(1).getMsgText(),"Reply back again");
+        assertEquals(replylist.get(1).getReplyDate(),"2015-09-13T00:00Z");
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");          
     }    
     
     @Test
@@ -365,8 +397,8 @@ public class MessagingApiTest {
         
         ProgramReply programReply = new ProgramReply("1");
         List<String> destinations = new ArrayList<String>();
-        destinations.add("4102804827");
-        destinations.add("4102804828"); 
+        destinations.add("14106277808");
+        destinations.add("14106277809");
         programReply.setDestinations(destinations);
         HttpResponseWrapper<MessageRepliesResponse> response = messagingApi.getProgramReplies(programReply);
 
@@ -380,6 +412,42 @@ public class MessagingApiTest {
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "");
     }
+    
+    @Test
+    public void getProgramRepliesValidProgramWithMdns() throws CMCException {
+        stubFor(get(urlMatching("/programreplies/[0-9A-Za-z]+/[0-9,]+"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\": \"success\",\"replies\":{\"numberofreplies\": 2,\"replylist\":[{\"from\": \"14106277808\",\"text\": \"Reply back\",\"date\": \"2015-07-13T00:00Z\"},{\"from\": \"14106277809\",\"text\":\"Reply back again\",\"date\":\"2015-09-13T00:00Z\"}]}}}")));
+        
+        ProgramReply programReply = new ProgramReply("GW1EwGohZtGQpmh8lGB");
+        List<String> destinations = new ArrayList<String>();
+        destinations.add("14106277808");
+        destinations.add("14106277809"); 
+        programReply.setDestinations(destinations);
+        HttpResponseWrapper<MessageRepliesResponse> response = messagingApi.getProgramReplies(programReply);
+
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 200);
+        assertEquals(response.getResponseBody().getStatus(),"success");
+        MessageReplies messageReplies = response.getResponseBody().getMessageReplies();
+        List<MessageReply> replylist = messageReplies.getReplies();
+        assertEquals(replylist.size(),2);
+        
+        assertEquals(replylist.get(0).getMin(),"14106277808");
+        assertEquals(replylist.get(0).getMsgText(),"Reply back");
+        assertEquals(replylist.get(0).getReplyDate(),"2015-07-13T00:00Z");
+        
+        assertEquals(replylist.get(1).getMin(),"14106277809");
+        assertEquals(replylist.get(1).getMsgText(),"Reply back again");
+        assertEquals(replylist.get(1).getReplyDate(),"2015-09-13T00:00Z");
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+/[0-9,]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");
+    }    
     
     @Test
     public void getProgramRepliesInvalidProgramWithMinutes() throws CMCException {
@@ -402,7 +470,40 @@ public class MessagingApiTest {
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+/since%3Fminutes=[0-9]+")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "");          
-    }    
+    }
+    
+    @Test
+    public void getProgramRepliesValidProgramWithMinutes() throws CMCException {    
+        stubFor(get(urlMatching("/programreplies/[0-9A-Za-z]+/since%3Fminutes=[0-9]+"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\": \"success\",\"replies\":{\"numberofreplies\": 2,\"replylist\":[{\"from\": \"14106277808\",\"text\": \"Reply back\",\"date\": \"2015-07-13T00:00Z\"},{\"from\": \"14106277809\",\"text\":\"Reply back again\",\"date\":\"2015-09-13T00:00Z\"}]}}}")));
+        
+        ProgramReply programReply = new ProgramReply("GW1EwGohZtGQpmh8lGB");
+        programReply.setMinutes("7");
+        HttpResponseWrapper<MessageRepliesResponse> response = messagingApi.getProgramReplies(programReply);
+
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 200);
+        assertEquals(response.getResponseBody().getStatus(),"success");
+        MessageReplies messageReplies = response.getResponseBody().getMessageReplies();
+        List<MessageReply> replylist = messageReplies.getReplies();
+        assertEquals(replylist.size(),2);
+        
+        assertEquals(replylist.get(0).getMin(),"14106277808");
+        assertEquals(replylist.get(0).getMsgText(),"Reply back");
+        assertEquals(replylist.get(0).getReplyDate(),"2015-07-13T00:00Z");
+        
+        assertEquals(replylist.get(1).getMin(),"14106277809");
+        assertEquals(replylist.get(1).getMsgText(),"Reply back again");
+        assertEquals(replylist.get(1).getReplyDate(),"2015-09-13T00:00Z");
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+/since%3Fminutes=[0-9]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");        
+    }
     
     @Test
     public void getProgramRepliesInvalidProgramWithMdnsAndMinutes() throws CMCException {
@@ -414,8 +515,8 @@ public class MessagingApiTest {
         
         ProgramReply programReply = new ProgramReply("1");
         List<String> destinations = new ArrayList<String>();
-        destinations.add("4102804827");
-        destinations.add("4102804828"); 
+        destinations.add("14106277808");
+        destinations.add("14106277809");
         programReply.setDestinations(destinations);
         programReply.setMinutes("7");
         HttpResponseWrapper<MessageRepliesResponse> response = messagingApi.getProgramReplies(programReply);
@@ -429,6 +530,43 @@ public class MessagingApiTest {
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+/since/[0-9,]+%3Fminutes=[0-9]+")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "");          
-    }      
+    }
+    
+    @Test
+    public void getProgramRepliesValidProgramWithMdnsAndMinutes() throws CMCException {
+        stubFor(get(urlMatching("/programreplies/[0-9A-Za-z]+/since/[0-9,]+%3Fminutes=[0-9]+"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\": \"success\",\"replies\":{\"numberofreplies\": 2,\"replylist\":[{\"from\": \"14106277808\",\"text\": \"Reply back\",\"date\": \"2015-07-13T00:00Z\"},{\"from\": \"14106277809\",\"text\":\"Reply back again\",\"date\":\"2015-09-13T00:00Z\"}]}}}")));
+        
+        ProgramReply programReply = new ProgramReply("GW1EwGohZtGQpmh8lGB");
+        List<String> destinations = new ArrayList<String>();
+        destinations.add("14106277808");
+        destinations.add("14106277809"); 
+        programReply.setDestinations(destinations);
+        programReply.setMinutes("7");
+        HttpResponseWrapper<MessageRepliesResponse> response = messagingApi.getProgramReplies(programReply);
+
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 200);
+        assertEquals(response.getResponseBody().getStatus(),"success");
+        MessageReplies messageReplies = response.getResponseBody().getMessageReplies();
+        List<MessageReply> replylist = messageReplies.getReplies();
+        assertEquals(replylist.size(),2);
+        
+        assertEquals(replylist.get(0).getMin(),"14106277808");
+        assertEquals(replylist.get(0).getMsgText(),"Reply back");
+        assertEquals(replylist.get(0).getReplyDate(),"2015-07-13T00:00Z");
+        
+        assertEquals(replylist.get(1).getMin(),"14106277809");
+        assertEquals(replylist.get(1).getMsgText(),"Reply back again");
+        assertEquals(replylist.get(1).getReplyDate(),"2015-09-13T00:00Z");
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+/since/[0-9,]+%3Fminutes=[0-9]+")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");          
+    }    
     
 }
