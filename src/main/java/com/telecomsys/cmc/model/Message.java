@@ -2,6 +2,8 @@ package com.telecomsys.cmc.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Message model.
  */
@@ -10,6 +12,7 @@ public class Message {
     /**
      * Message destinations.
      */
+    @JsonProperty("to")
     private List<String> destinations;
 
     /**
@@ -20,6 +23,7 @@ public class Message {
     /**
      * Keyword for connection.
      */
+    @JsonProperty("from")
     private String keyword;
 
     /**
