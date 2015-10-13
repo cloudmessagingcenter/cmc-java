@@ -18,7 +18,7 @@ public class SchedulingApi extends CmcBaseApi {
     /**
      * Scheduling End point.
      */
-    public static final String SCHEDULING_URL = "/schedulemessage";
+    public static final String SCHEDULING_URL = "/schedules";
 
     /**
      * Constructor.
@@ -75,6 +75,22 @@ public class SchedulingApi extends CmcBaseApi {
 
         // Create the request with parameters.
         CmcHttpRequest cmcRequest = new CmcHttpRequest(sb.toString());
+
+        // Send the request to CMC.
+        return httpClient.doDelete(cmcRequest, RestResponse.class);
+    }
+
+    /**
+     * Method to delete all the scheduled messages using CMC REST API.
+     *
+     * @return HttpResponseWrapper http response wrapper with the response.
+     * @throws CMCException CMC exception if errors.
+     */
+    public HttpResponseWrapper<RestResponse> deleteAllScheduledMessages() throws CMCException {
+
+        // Create the request with parameters.
+        CmcHttpRequest cmcRequest = new CmcHttpRequest(SCHEDULING_URL);
+        cmcRequest.addUrlParameter("all", "true");
 
         // Send the request to CMC.
         return httpClient.doDelete(cmcRequest, RestResponse.class);
