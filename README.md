@@ -1,6 +1,8 @@
 # cmc-java
 
-Java library for communicating with the Cloud Messaging Center (CMC) REST API
+Java library for communicating with the Cloud Messaging Center (CMC) REST API.
+
+You can sign up for a Cloud Messaging Center (CMC) REST API account at https://www.cloudmessagingcenter.com/.
 
 Prerequisites:
 ============
