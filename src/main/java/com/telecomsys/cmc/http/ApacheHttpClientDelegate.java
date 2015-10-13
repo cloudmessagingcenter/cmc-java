@@ -39,9 +39,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.telecomsys.cmc.exception.CMCAuthenticationException;
+import com.telecomsys.cmc.exception.CMCClientException;
 import com.telecomsys.cmc.exception.CMCException;
 import com.telecomsys.cmc.exception.CMCIOException;
-import com.telecomsys.cmc.exception.CMCServerException;
 import com.telecomsys.cmc.response.RestResponse;
 
 /**
@@ -266,10 +266,10 @@ public class ApacheHttpClientDelegate implements HttpClientDelegate {
                 return HttpResponseWrapper.create(statusCode, responseBody);
             } else if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
                 throw new CMCAuthenticationException("Authentication failed");
-            } else if (statusCode > HttpStatus.SC_BAD_REQUEST) {
-                // These are the http status code not specifically returned by the application. So server error.
+            } else if (statusCode >= HttpStatus.SC_BAD_REQUEST && statusCode < HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+                // These are the http status code specifically related to client error.
                 RestResponse error = jsonMapper.readValue(jsonStream, RestResponse.class);
-                throw new CMCServerException(error, statusCode);
+                throw new CMCClientException(error, statusCode);
             } else {
                 throw new CMCException("Invalid CMC response");
             }

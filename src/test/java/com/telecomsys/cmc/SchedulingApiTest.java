@@ -13,7 +13,7 @@ import com.telecomsys.cmc.api.SchedulingApi;
 import com.telecomsys.cmc.exception.CMCAuthenticationException;
 import com.telecomsys.cmc.exception.CMCException;
 import com.telecomsys.cmc.exception.CMCIOException;
-import com.telecomsys.cmc.exception.CMCServerException;
+import com.telecomsys.cmc.exception.CMCClientException;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
 import com.telecomsys.cmc.model.Message;
 import com.telecomsys.cmc.response.RestResponse;
@@ -182,6 +182,32 @@ public class SchedulingApiTest {
         List<LoggedRequest> requests = findAll(deleteRequestedFor(urlPathMatching("/schedules*")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "");
-    }    
+    }
+    
+    @Test
+    public void scheduleMessagesSingleDestinationInvalidDate() throws CMCException {
+        stubFor(post(urlEqualTo("/schedules"))
+                .willReturn(aResponse()
+                    .withStatus(400)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"9004\",\"message\":\"Scheduled event with name Test schedule start date is in the past. Please try again with correct start date.\"}}")));        
+        
+        List<String> destinations = new ArrayList<String>();
+        destinations.add("410333444"); 
+        Message message = new Message(destinations, REST_CONNECTION_KEYWORD, "Test schedule");
+        
+        try {
+            schedulingApi.scheduleMessage(message);
+        } catch (CMCClientException cmex) {
+            RestResponse error = cmex.getError();
+            assertEquals(error.getStatus(), "fail");
+            assertEquals(error.getCode(), "9004");
+        }
+        
+        // Verify the request
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/schedules")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "{\"schedulemessage\":{\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-06-20T12:46-04\",\"enddate\":\"2015-07-29T18:46-04\",\"name\":\"Test schedule\"},\"message\":{\"to\":[\"410333444\",\"1231234444\"],\"from\":\"scsrest\",\"message\":\"Test of schedule message\",\"subject\":\"Test\",\"notifyURL\":\"http://customer.com/notifications\"}}}");
+    }      
     
 }

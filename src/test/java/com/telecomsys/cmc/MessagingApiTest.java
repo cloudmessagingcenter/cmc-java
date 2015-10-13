@@ -13,7 +13,7 @@ import com.telecomsys.cmc.api.MessagingApi;
 import com.telecomsys.cmc.exception.CMCAuthenticationException;
 import com.telecomsys.cmc.exception.CMCException;
 import com.telecomsys.cmc.exception.CMCIOException;
-import com.telecomsys.cmc.exception.CMCServerException;
+import com.telecomsys.cmc.exception.CMCClientException;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
 import com.telecomsys.cmc.model.Message;
 import com.telecomsys.cmc.model.ProgramReply;
@@ -97,7 +97,7 @@ public class MessagingApiTest {
             destinations.add("4102804827");
             Message message = new Message(destinations, REST_CONNECTION_KEYWORD, "Test message");
             messagingApi.sendMessage(message);
-        } catch (CMCServerException cmex) {
+        } catch (CMCClientException cmex) {
             RestResponse error = cmex.getError();
             assertEquals(error.getStatus(), "fail");
             assertEquals(error.getCode(), "1010");
