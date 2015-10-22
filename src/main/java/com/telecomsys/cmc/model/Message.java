@@ -39,6 +39,7 @@ public class Message {
     /**
      * Notify URL for responses.
      */
+    @JsonProperty("replyexpiry")
     private Integer replyExpiry;
 
     /**

@@ -171,7 +171,7 @@ public class MessagingApiTest {
         // Verify the request
         List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/messages")));
         assertEquals(requests.size(), 1);
-        assertEquals(requests.get(0).getBodyAsString(), "{\"sendmessage\":{\"message\":\"Test message\",\"to\":[\"4102804827\",\"4102804828\"],\"notifyURL\":\"http://customer.com/notifications\",\"replyexpiry\":60,\"from\":\"scsrest\"}}");
+        assertEquals(requests.get(0).getBodyAsString(), "{\"sendmessage\":{\"message\":\"Test message\",\"notifyURL\":\"http://customer.com/notifications\",\"to\":[\"4102804827\",\"4102804828\"],\"from\":\"scsrest\",\"replyexpiry\":60}}");
     } 
     
     @Test

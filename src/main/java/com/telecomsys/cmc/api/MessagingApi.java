@@ -64,23 +64,7 @@ public class MessagingApi extends CmcBaseApi {
 
         // Create the request with parameters.
         CmcHttpRequest cmcRequest = new CmcHttpRequest(MESSAGING_URL);
-        cmcRequest.addBodyParameter("to", message.getDestinations());
-        cmcRequest.addBodyParameter("from", message.getKeyword());
-        cmcRequest.addBodyParameter("message", message.getMessage());
-
-        String subject = message.getSubject();
-        if (subject != null && subject.length() > 0) {
-            cmcRequest.addBodyParameter("subject", subject);
-        }
-        String notifyURL = message.getNotifyURL();
-        if (notifyURL != null && notifyURL.length() > 0) {
-            cmcRequest.addBodyParameter("notifyURL", notifyURL);
-        }
-        Integer replyexpiry = message.getReplyExpiry();
-        if (replyexpiry != null) {
-            cmcRequest.addBodyParameter("replyexpiry", replyexpiry);
-        }
-        cmcRequest.setMessageWrapperName("sendmessage");
+        cmcRequest.addBodyParameter("sendmessage", message);
 
         // Send the message to CMC.
         return httpClient.doPost(cmcRequest, NotificationsResponse.class);
