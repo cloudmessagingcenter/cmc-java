@@ -16,6 +16,8 @@ import com.telecomsys.cmc.exception.CMCIOException;
 import com.telecomsys.cmc.exception.CMCClientException;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
 import com.telecomsys.cmc.model.Message;
+import com.telecomsys.cmc.model.Schedule;
+import com.telecomsys.cmc.model.ScheduleMessage;
 import com.telecomsys.cmc.response.RestResponse;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -195,9 +197,19 @@ public class SchedulingApiTest {
         List<String> destinations = new ArrayList<String>();
         destinations.add("410333444"); 
         Message message = new Message(destinations, REST_CONNECTION_KEYWORD, "Test schedule");
+        message.setSubject("Test");
+        
+        Schedule schedule = new Schedule();
+        schedule.setJobName("Test schedule");
+        schedule.setRecurrence("weekly");
+        schedule.setStartDate("2015-06-20T12:46-04");
+        schedule.setExpireDate("2015-07-29T18:46-04");
+        ScheduleMessage schedulMessage = new ScheduleMessage();
+        schedulMessage.setMessage(message);
+        schedulMessage.setSchedule(schedule);
         
         try {
-            schedulingApi.scheduleMessage(message);
+            schedulingApi.scheduleMessage(schedulMessage);
         } catch (CMCClientException cmex) {
             RestResponse error = cmex.getError();
             assertEquals(error.getStatus(), "fail");
@@ -207,7 +219,7 @@ public class SchedulingApiTest {
         // Verify the request
         List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/schedules")));
         assertEquals(requests.size(), 1);
-        assertEquals(requests.get(0).getBodyAsString(), "{\"schedulemessage\":{\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-06-20T12:46-04\",\"enddate\":\"2015-07-29T18:46-04\",\"name\":\"Test schedule\"},\"message\":{\"to\":[\"410333444\",\"1231234444\"],\"from\":\"scsrest\",\"message\":\"Test of schedule message\",\"subject\":\"Test\",\"notifyURL\":\"http://customer.com/notifications\"}}}");
-    }      
+        assertEquals(requests.get(0).getBodyAsString(), "{\"schedulemessage\":{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\"],\"from\":\"scsrest\"},\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-06-20T12:46-04\",\"enddate\":\"2015-07-29T18:46-04\",\"name\":\"Test schedule\"}}}");
+    }   
     
 }

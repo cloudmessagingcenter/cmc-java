@@ -5,7 +5,6 @@ import java.util.List;
 import com.telecomsys.cmc.exception.CMCException;
 import com.telecomsys.cmc.http.CmcHttpRequest;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
-import com.telecomsys.cmc.model.Message;
 import com.telecomsys.cmc.model.ScheduleMessage;
 import com.telecomsys.cmc.response.RestResponse;
 import com.telecomsys.cmc.utils.StringUtils;
@@ -34,22 +33,16 @@ public class SchedulingApi extends CmcBaseApi {
     /**
      * Method to schedule a message using CMC REST API.
      *
-     * @param message the Message model that has all message details.
+     * @param schedule the ScheduleMessage model that has all schedule details.
      * @return HttpResponseWrapper http response wrapper with the response.
      * @throws CMCException CMC exception if errors.
      */
-    public HttpResponseWrapper<ScheduleMessage> scheduleMessage(Message message) throws CMCException {
+    public HttpResponseWrapper<ScheduleMessage> scheduleMessage(ScheduleMessage schedule) throws CMCException {
 
         // Create the request with parameters.
         CmcHttpRequest cmcRequest = new CmcHttpRequest(SCHEDULING_URL);
-        cmcRequest.addBodyParameter("to", message.getDestinations());
-        cmcRequest.addBodyParameter("from", message.getKeyword());
-        cmcRequest.addBodyParameter("message", message.getMessage());
-
-        String subject = message.getSubject();
-        if (subject != null && subject.length() > 0) {
-            cmcRequest.addBodyParameter("subject", subject);
-        }
+        cmcRequest.addBodyParameter("message", schedule.getMessage());
+        cmcRequest.addBodyParameter("schedule", schedule.getSchedule());
         cmcRequest.setMessageWrapperName("schedulemessage");
 
         // Send the message to CMC.
