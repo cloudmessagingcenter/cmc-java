@@ -45,14 +45,20 @@ public class Message {
     /**
      * Constructor with mandatory parameters.
      *
-    * @param destinations the MIN or groups to send the message to.
-    * @param keyword the keyword used to identify the REST connection.
-    * @param message the message to be sent.
+     * @param destinations the MIN or groups to send the message to.
+     * @param keyword the keyword used to identify the REST connection.
+     * @param message the message to be sent.
      */
     public Message(List<String> destinations, String keyword, String message) {
         this.message = message;
         this.destinations = destinations;
         this.keyword = keyword;
+    }
+
+    /**
+     * Default constructor.
+     */
+    public Message() {
     }
 
     /**
