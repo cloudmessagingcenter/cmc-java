@@ -35,7 +35,7 @@
 
     <scm>
         <connection>scm:git:git://github.com/cloudmessagingcenter/cmc-java.git</connection>
-        <developerConnection>scm:git:git@cloudmessagingcenter/cmc-java.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:cloudmessagingcenter/cmc-java.git</developerConnection>
         <url>http://github.com/cloudmessagingcenter/cmc-java</url>
         <tag>HEAD</tag>
     </scm>
