@@ -20,7 +20,7 @@ public class SchedulingApi extends CmcBaseApi {
     public static final String SCHEDULING_URL = "/schedules";
 
     /**
-     * Constructor.
+     * Constructor with mandatory parameters.
      *
      * @param baseUri base URL to connect to the CMC REST service.
      * @param accountID the REST account identity.
