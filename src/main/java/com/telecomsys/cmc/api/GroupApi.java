@@ -91,7 +91,7 @@ public class GroupApi extends CmcBaseApi {
     }
 
     /**
-     * Method to delete all the users groups using CMC REST API.
+     * Method to delete all the users from groups using CMC REST API.
      *
      * @return HttpResponseWrapper http response wrapper with the response.
      * @throws CMCException CMC exception if errors.
