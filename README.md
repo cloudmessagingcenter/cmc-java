@@ -1,4 +1,4 @@
-# cmc-java [![Build Status](https://travis-ci.org/cloudmessagingcenter/cmc-java.svg?branch=master)](https://travis-ci.org/cloudmessagingcenter/cmc-java)
+# CMC REST API Java SDK  [![Build Status](https://travis-ci.org/cloudmessagingcenter/cmc-java.svg?branch=master)](https://travis-ci.org/cloudmessagingcenter/cmc-java)
 
 Java library for communicating with the Cloud Messaging Center (CMC) REST API.
 
