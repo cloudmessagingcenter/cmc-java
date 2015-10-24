@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * scheduled message.
  */
 @JsonRootName("schedulemessage")
-@JsonPropertyOrder("schedule", "message")
+@JsonPropertyOrder({"schedule", "message"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ScheduleMessage {
 
