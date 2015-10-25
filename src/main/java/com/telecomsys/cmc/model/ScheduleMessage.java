@@ -2,16 +2,16 @@ package com.telecomsys.cmc.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 /**
  * The schedule message model. This encapsulates the request and response sent when the client requests details about a
  * scheduled message.
  */
 @JsonRootName("schedulemessage")
-@JsonPropertyOrder({"schedule", "message"})
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonPropertyOrder(alphabetic = true)
 public class ScheduleMessage {
 
     /**
@@ -21,14 +21,14 @@ public class ScheduleMessage {
     private Long messageId;
 
     /**
-     * Schedule data.
-     */
-    private Schedule schedule;
-
-    /**
      * Message data.
      */
     private Message message;
+
+    /**
+     * Schedule data.
+     */
+    private Schedule schedule;
 
     /**
      * @return the messageId
