@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 /**
- * The schedule message model. This encapsulates the request and response sent when the client requests details about a
+ * The schedule message model which encapsulates the request and response sent when the client requests details about a
  * scheduled message.
  */
 @JsonRootName("schedulemessage")
