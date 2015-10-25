@@ -219,7 +219,8 @@ public class SchedulingApiTest {
         // Verify the request
         List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/schedules")));
         assertEquals(requests.size(), 1);
-        assertEquals(requests.get(0).getBodyAsString(), "{\"schedulemessage\":{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\"],\"from\":\"scsrest\"},\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-06-20T12:46-04\",\"enddate\":\"2015-07-29T18:46-04\",\"name\":\"Test schedule\"}}}");
+        assertTrue(requests.get(0).getBodyAsString().equals("{\"schedulemessage\":{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\"],\"from\":\"scsrest\"},\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-06-20T12:46-04\",\"enddate\":\"2015-07-29T18:46-04\",\"name\":\"Test schedule\"}}}") ||
+                requests.get(0).getBodyAsString().equals("{\"schedulemessage\":\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-06-20T12:46-04\",\"enddate\":\"2015-07-29T18:46-04\",\"name\":\"Test schedule\"},{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\"],\"from\":\"scsrest\"}}}"));
     }
     
     @Test
@@ -255,7 +256,8 @@ public class SchedulingApiTest {
         // Verify the request
         List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/schedules")));
         assertEquals(requests.size(), 1);
-        assertEquals(requests.get(0).getBodyAsString(), "{\"schedulemessage\":{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\"],\"from\":\"scsrest\"},\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-11-20T12:46-04\",\"enddate\":\"2016-07-29T18:46-04\",\"name\":\"Test schedule\"}}}");
+        assertTrue(requests.get(0).getBodyAsString().equals("{\"schedulemessage\":{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\"],\"from\":\"scsrest\"},\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-11-20T12:46-04\",\"enddate\":\"2016-07-29T18:46-04\",\"name\":\"Test schedule\"}}}") ||
+                requests.get(0).getBodyAsString().equals("{\"schedulemessage\":\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-11-20T12:46-04\",\"enddate\":\"2016-07-29T18:46-04\",\"name\":\"Test schedule\"},{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\"],\"from\":\"scsrest\"}}}"));
     }
     
     @Test
@@ -300,7 +302,8 @@ public class SchedulingApiTest {
         // Verify the request
         List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/schedules")));
         assertEquals(requests.size(), 1);
-        assertEquals(requests.get(0).getBodyAsString(), "{\"schedulemessage\":{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\"],\"from\":\"scsrest\"},\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-11-20T12:46-04\",\"enddate\":\"2016-07-29T18:46-04\",\"name\":\"Test schedule\"}}}");
+        assertTrue(requests.get(0).getBodyAsString().equals("{\"schedulemessage\":{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\"],\"from\":\"scsrest\"},\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-11-20T12:46-04\",\"enddate\":\"2016-07-29T18:46-04\",\"name\":\"Test schedule\"}}}") ||
+                requests.get(0).getBodyAsString().equals("{\"schedulemessage\":\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-11-20T12:46-04\",\"enddate\":\"2016-07-29T18:46-04\",\"name\":\"Test schedule\"},{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\"],\"from\":\"scsrest\"}}}"));
     }
     
     @Test
@@ -347,7 +350,9 @@ public class SchedulingApiTest {
         // Verify the request
         List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/schedules")));
         assertEquals(requests.size(), 1);
-        assertEquals(requests.get(0).getBodyAsString(), "{\"schedulemessage\":{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\",\"410333445\"],\"from\":\"scsrest\"},\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-11-20T12:46-04\",\"enddate\":\"2016-07-29T18:46-04\",\"name\":\"Test schedule\"}}}");
+        assertTrue(requests.get(0).getBodyAsString().equals("{\"schedulemessage\":{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\",\"410333445\"],\"from\":\"scsrest\"},\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-11-20T12:46-04\",\"enddate\":\"2016-07-29T18:46-04\",\"name\":\"Test schedule\"}}}") ||
+                requests.get(0).getBodyAsString().equals("{\"schedulemessage\":\"schedule\":{\"recurrence\":\"weekly\",\"startdate\":\"2015-11-20T12:46-04\",\"enddate\":\"2016-07-29T18:46-04\",\"name\":\"Test schedule\"},{\"message\":{\"message\":\"Test schedule\",\"subject\":\"Test\",\"to\":[\"410333444\",\"410333445\"],\"from\":\"scsrest\"}}}"));
+ 
     }        
     
 }
