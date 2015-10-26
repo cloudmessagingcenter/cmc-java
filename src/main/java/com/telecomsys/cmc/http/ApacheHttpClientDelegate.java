@@ -177,9 +177,9 @@ public class ApacheHttpClientDelegate implements HttpClientDelegate {
                 List<NameValuePair> getParams = convertToNamedValuePairs(request.getUrlParameters());
                 URI uriGet = null;
                 if (getParams.size() > 0) {
-                    uriGet = new URIBuilder(baseUri).setPath(request.getPath()).addParameters(getParams).build();
+                    uriGet = new URIBuilder(baseUri + request.getPath()).addParameters(getParams).build();
                 } else {
-                    uriGet = new URIBuilder(baseUri).setPath(request.getPath()).build();
+                    uriGet = new URIBuilder(baseUri + request.getPath()).build();
                 }
                 httpMethod = new HttpGet(uriGet);
                 break;
@@ -204,9 +204,9 @@ public class ApacheHttpClientDelegate implements HttpClientDelegate {
                 List<NameValuePair> deleteParams = convertToNamedValuePairs(request.getUrlParameters());
                 URI uriDelete = null;
                 if (deleteParams.size() > 0) {
-                    uriDelete = new URIBuilder(baseUri).setPath(request.getPath()).addParameters(deleteParams).build();
+                    uriDelete = new URIBuilder(baseUri + request.getPath()).addParameters(deleteParams).build();
                 } else {
-                    uriDelete = new URIBuilder(baseUri).setPath(request.getPath()).build();
+                    uriDelete = new URIBuilder(baseUri + request.getPath()).build();
                 }
                 httpMethod = new HttpDelete(uriDelete);
                 break;
