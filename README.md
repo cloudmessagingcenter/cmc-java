@@ -38,6 +38,35 @@ If you're planning on using ProGuard, make sure that you exclude the CMC binding
 
     -keep class com.telecomsys.cmc.** { *; }
 
-Usage
-=====
+API Usage
+=========
 
+REST URL for trial: https://www.cloudmessagingtrial.com/rest/v1
+
+REST URL for production: https://www.cloudmessaging.com/rest/v1
+
+*	Import the classes into your code. For example,
+
+```java
+import com.telecomsys.cmc.*;
+``` 
+
+To send a message:
+------------------
+
+
+*	Create the API end point using the REST URL and the account ID (ACCOUNTID) and authentication token (AUTHTOKEN) you 
+    receive in the REST sign-up email. For example to create the messaging end point:
+    
+```java
+MessagingApi messagingApi = new MessagingApi("https://www.cloudmessagingtrial.com/rest/v1", ACCOUNTID, AUTHTOKEN);
+```
+
+*	Send the message to the destinations using the REST keyword (KEYWORD) receive in the REST sign-up email.
+
+```java
+List<String> destinations = new ArrayList<String>();
+destinations.add(deviceNumber);
+Message message = new Message(destinations, KEYWORD, "Test message");
+HttpResponseWrapper<NotificationsResponse> sendMsgResponse = messagingApi.sendMessage(message);
+```
