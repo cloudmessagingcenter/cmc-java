@@ -451,7 +451,7 @@ public class MessagingApiTest {
     
     @Test
     public void getProgramRepliesInvalidProgramWithMinutes() throws CMCException {
-        stubFor(get(urlMatching("/programreplies/[0-9A-Za-z]+/since%3Fminutes=[0-9]+"))
+        stubFor(get(urlPathMatching("/programreplies(.*)"))
                 .willReturn(aResponse()
                     .withStatus(404)
                     .withHeader("Content-Type", "application/json")
@@ -467,14 +467,14 @@ public class MessagingApiTest {
         assertEquals(response.getResponseBody().getCode(), "4003");
         
         // Verify the request
-        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+/since%3Fminutes=[0-9]+")));
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlPathMatching("/programreplies(.*)")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "");          
     }
     
     @Test
     public void getProgramRepliesValidProgramWithMinutes() throws CMCException {    
-        stubFor(get(urlMatching("/programreplies/[0-9A-Za-z]+/since%3Fminutes=[0-9]+"))
+        stubFor(get(urlPathMatching("/programreplies(.*)"))
                 .willReturn(aResponse()
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
@@ -500,14 +500,14 @@ public class MessagingApiTest {
         assertEquals(replylist.get(1).getReplyDate(),"2015-09-13T00:00Z");
         
         // Verify the request
-        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+/since%3Fminutes=[0-9]+")));
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlPathMatching("/programreplies(.*)")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "");        
     }
     
     @Test
     public void getProgramRepliesInvalidProgramWithMdnsAndMinutes() throws CMCException {
-        stubFor(get(urlMatching("/programreplies/[0-9A-Za-z]+/since/[0-9,]+%3Fminutes=[0-9]+"))
+        stubFor(get(urlPathMatching("/programreplies(.*)"))
                 .willReturn(aResponse()
                     .withStatus(404)
                     .withHeader("Content-Type", "application/json")
@@ -527,14 +527,14 @@ public class MessagingApiTest {
         assertEquals(response.getResponseBody().getCode(), "4003");
         
         // Verify the request
-        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+/since/[0-9,]+%3Fminutes=[0-9]+")));
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlPathMatching("/programreplies(.*)")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "");          
     }
     
     @Test
     public void getProgramRepliesValidProgramWithMdnsAndMinutes() throws CMCException {
-        stubFor(get(urlMatching("/programreplies/[0-9A-Za-z]+/since/[0-9,]+%3Fminutes=[0-9]+"))
+        stubFor(get(urlPathMatching("/programreplies(.*)"))
                 .willReturn(aResponse()
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
@@ -564,7 +564,7 @@ public class MessagingApiTest {
         assertEquals(replylist.get(1).getReplyDate(),"2015-09-13T00:00Z");
         
         // Verify the request
-        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/programreplies/[0-9A-Za-z]+/since/[0-9,]+%3Fminutes=[0-9]+")));
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlPathMatching("/programreplies(.*)")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "");          
     }    

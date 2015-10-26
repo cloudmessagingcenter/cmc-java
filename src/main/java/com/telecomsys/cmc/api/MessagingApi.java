@@ -162,12 +162,11 @@ public class MessagingApi extends CmcBaseApi {
             sb.append("/").append(mdnsStr);
         }
 
-        if (minutes != null) {
-            sb.append("?").append("minutes=").append(minutes);
-        }
-
         // Create the request with parameters.
         CmcHttpRequest cmcRequest = new CmcHttpRequest(sb.toString());
+        if (minutes != null) {
+            cmcRequest.addUrlParameter("minutes", minutes);
+        }
 
         // Send the message to CMC.
         return httpClient.doGet(cmcRequest, MessageRepliesResponse.class);
