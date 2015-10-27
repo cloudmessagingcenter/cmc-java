@@ -49,24 +49,6 @@ public class GroupApi extends CmcBaseApi {
     }
 
     /**
-     * Method to update group using CMC REST API.
-     *
-     * @param group Group to be updated.
-     * @return HttpResponseWrapper http response wrapper with the response.
-     * @throws CMCException CMC exception if errors.
-     */
-    public HttpResponseWrapper<RestResponse> updateGroup(Group group) throws CMCException {
-
-        // Create the request with parameters.
-        CmcHttpRequest cmcRequest = new CmcHttpRequest(GROUPS_URL);
-        cmcRequest.addBodyParameter("groups", group);
-        cmcRequest.setMessageWrapperName("groupList");
-
-        // Send the request to CMC.
-        return httpClient.doPut(cmcRequest, RestResponse.class);
-    }
-
-    /**
      * Method to delete group(s) using CMC REST API.
      *
      * @param groupNames List of groups to be deleted identified by their names.

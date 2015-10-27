@@ -97,7 +97,7 @@ public class ContactApiTest {
                 .willReturn(aResponse()
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
-                    .withBody("{\"response\":{\"statusList\":[{\"status\":\"error\",\"code\":\"8003\",\"message\":\"Contact with cell number 14102718102 already exists.\"}]}}")));
+                    .withBody("{\"response\":{\"statusList\":[{\"status\":\"fail\",\"code\":\"8003\",\"message\":\"Contact with cell number 14102718102 already exists.\"}]}}")));
         
         List<Contact> contacts = new ArrayList<Contact>();
         contacts.add(new Contact("14102718101", "John", "Doe"));
@@ -106,7 +106,7 @@ public class ContactApiTest {
         // Verify the response.
         assertEquals(response.getHttpStatusCode(), 200);
         assertEquals(response.getResponseBody().getStatusResponses().size(), 1);
-        assertEquals(response.getResponseBody().getStatusResponses().get(0).getStatus(), "error");   
+        assertEquals(response.getResponseBody().getStatusResponses().get(0).getStatus(), "fail");   
         assertEquals(response.getResponseBody().getStatusResponses().get(0).getCode(), "8003");   
 
         // Verify the request
