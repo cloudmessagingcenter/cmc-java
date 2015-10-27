@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 /**
- * The schedule message model. This encapsulates the request and response sent when the client requests details about a
+ * The schedule message model which encapsulates the request and response sent when the client requests details about a
  * scheduled message.
  */
 @JsonRootName("schedulemessage")
@@ -19,14 +19,14 @@ public class ScheduleMessage {
     private Long messageId;
 
     /**
-     * Schedule data.
-     */
-    private Schedule schedule;
-
-    /**
      * Message data.
      */
     private Message message;
+
+    /**
+     * Schedule data.
+     */
+    private Schedule schedule;
 
     /**
      * @return the messageId

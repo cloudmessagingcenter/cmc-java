@@ -1,3 +1,11 @@
-=== 1.1.0 2015-10-23
+=== 1.1.1 2015-10-27
+
+* Fix issue with query parameters not being handled correctly.
+
+=== 1.1.0 2015-10-25
+
+* Support for Java 8.
+
+=== 1.0.0 2015-10-23
 
 * Initial version of the CMC java SDK implementation. Supports messaging, scheduling and contacts.
