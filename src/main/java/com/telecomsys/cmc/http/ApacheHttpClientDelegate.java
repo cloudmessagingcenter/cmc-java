@@ -3,6 +3,7 @@ package com.telecomsys.cmc.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,13 +176,7 @@ public class ApacheHttpClientDelegate implements HttpClientDelegate {
             case HttpGet.METHOD_NAME:
                 // Create the list of parameters for the request.
                 List<NameValuePair> getParams = convertToNamedValuePairs(request.getUrlParameters());
-                URI uriGet = null;
-                if (getParams.size() > 0) {
-                    uriGet = new URIBuilder(baseUri + request.getPath()).addParameters(getParams).build();
-                } else {
-                    uriGet = new URIBuilder(baseUri + request.getPath()).build();
-                }
-                httpMethod = new HttpGet(uriGet);
+                httpMethod = new HttpGet(escapeURI(baseUri, request.getPath(), getParams));
                 break;
             case HttpPost.METHOD_NAME:
                 HttpPost post = new HttpPost(baseUri + request.getPath());
@@ -202,13 +197,7 @@ public class ApacheHttpClientDelegate implements HttpClientDelegate {
             case HttpDelete.METHOD_NAME:
                 // Create the list of parameters for the request.
                 List<NameValuePair> deleteParams = convertToNamedValuePairs(request.getUrlParameters());
-                URI uriDelete = null;
-                if (deleteParams.size() > 0) {
-                    uriDelete = new URIBuilder(baseUri + request.getPath()).addParameters(deleteParams).build();
-                } else {
-                    uriDelete = new URIBuilder(baseUri + request.getPath()).build();
-                }
-                httpMethod = new HttpDelete(uriDelete);
+                httpMethod = new HttpDelete(escapeURI(baseUri, request.getPath(), deleteParams));
                 break;
             default:
                 break;
@@ -323,6 +312,28 @@ public class ApacheHttpClientDelegate implements HttpClientDelegate {
             namedValueParameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
         }
         return namedValueParameters;
+    }
+
+    /**
+     * Helper method to create an escaped URL.
+     *
+     * @param unescapedURI URI to escape.
+     * @param extraPath path to append to the URI
+     * @param queryParams query parameters to be added to the path.
+     * @return URI escaped URI.
+     * @throws URISyntaxException URI syntax exception.
+     */
+    private static URI escapeURI(String unescapedURI, String extraPath, List<NameValuePair> queryParams)
+            throws URISyntaxException {
+        URI uri = new URI(unescapedURI);
+
+        // Append the path in the passed in unescapedURI to the extraPath as it overwrites the path in the unescapedURI
+        // when we do a setPath.
+        if (queryParams.size() > 0) {
+            return new URIBuilder(unescapedURI).setPath(uri.getPath() + extraPath).addParameters(queryParams).build();
+        } else {
+            return new URIBuilder(unescapedURI).setPath(uri.getPath() + extraPath).build();
+        }
     }
 
 }
