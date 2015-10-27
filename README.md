@@ -20,7 +20,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>com.telecomsys.cmc</groupId>
   <artifactId>cmc-java</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
 </dependency>
 ```
 
@@ -29,7 +29,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "com.telecomsys.cmc:cmc-java:1.1.0"
+compile "com.telecomsys.cmc:cmc-java:1.1.1"
 ```
 
 ### [ProGuard](http://proguard.sourceforge.net/)
