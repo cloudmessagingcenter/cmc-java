@@ -29,6 +29,7 @@ import com.telecomsys.cmc.exception.CMCException;
 import com.telecomsys.cmc.exception.CMCIOException;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
 import com.telecomsys.cmc.model.Group;
+import com.telecomsys.cmc.model.GroupMember;
 import com.telecomsys.cmc.response.GroupResponse;
 import com.telecomsys.cmc.response.RestResponse;
 
@@ -101,7 +102,128 @@ public class GroupApiTest {
         List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "{\"groups\":{\"groupname\":\"Test rest group api\",\"groupdesc\":\"Test rest group api description\"}}");
-    } 
+    }
+    
+    @Test
+    public void addGroupSingleMdnMember() throws CMCException {
+        stubFor(post(urlEqualTo("/groups"))
+                .willReturn(aResponse()
+                    .withStatus(201)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\": {\"status\": \"success\"}}")));
+        
+        Group group = new Group();
+        group.setName("Test rest group api");
+        group.setDescription("Test rest group api description");
+        List<GroupMember> members = new ArrayList<GroupMember>();
+        GroupMember groupMember = new GroupMember();
+        groupMember.setMdn("14102951866");
+        members.add(groupMember);
+        group.setMembers(members);
+        HttpResponseWrapper<RestResponse> response = groupApi.addGroup(group);
+        
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 201);
+        assertEquals(response.getResponseBody().getStatus(), "success");   
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "{\"groups\":{\"members\":[{\"mdn\":\"14102951866\"}],\"groupname\":\"Test rest group api\",\"groupdesc\":\"Test rest group api description\"}}");
+    }
+    
+    @Test
+    public void addGroupMultipleMdnMembers() throws CMCException {
+        stubFor(post(urlEqualTo("/groups"))
+                .willReturn(aResponse()
+                    .withStatus(201)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\": {\"status\": \"success\"}}")));
+        
+        Group group = new Group();
+        group.setName("Test rest group api");
+        group.setDescription("Test rest group api description");
+        List<GroupMember> members = new ArrayList<GroupMember>();
+        GroupMember groupMember = new GroupMember();
+        groupMember.setMdn("14102951866");
+        members.add(groupMember);
+        groupMember = new GroupMember();
+        groupMember.setMdn("14102804827");
+        members.add(groupMember);
+        groupMember = new GroupMember();
+        groupMember.setMdn("14102951927");
+        members.add(groupMember);
+        group.setMembers(members);
+        HttpResponseWrapper<RestResponse> response = groupApi.addGroup(group);
+        
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 201);
+        assertEquals(response.getResponseBody().getStatus(), "success");   
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "{\"groups\":{\"members\":[{\"mdn\":\"14102951866\"},{\"mdn\":\"14102804827\"},{\"mdn\":\"14102951927\"}],\"groupname\":\"Test rest group api\",\"groupdesc\":\"Test rest group api description\"}}");
+    }
+    
+    @Test
+    public void addGroupSingleContactMember() throws CMCException {
+        stubFor(post(urlEqualTo("/groups"))
+                .willReturn(aResponse()
+                    .withStatus(201)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\": {\"status\": \"success\"}}")));
+        
+        Group group = new Group();
+        group.setName("Test rest group api");
+        group.setDescription("Test rest group api description");
+        List<GroupMember> members = new ArrayList<GroupMember>();
+        GroupMember groupMember = new GroupMember();
+        groupMember.setContactName("Doe-John");
+        members.add(groupMember);
+        group.setMembers(members);
+        HttpResponseWrapper<RestResponse> response = groupApi.addGroup(group);
+        
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 201);
+        assertEquals(response.getResponseBody().getStatus(), "success");   
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "{\"groups\":{\"members\":[{\"contact\":\"Doe-John\"}],\"groupname\":\"Test rest group api\",\"groupdesc\":\"Test rest group api description\"}}");
+    }
+    
+    @Test
+    public void addGroupMultipleContactMembers() throws CMCException {
+        stubFor(post(urlEqualTo("/groups"))
+                .willReturn(aResponse()
+                    .withStatus(201)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\": {\"status\": \"success\"}}")));
+        
+        Group group = new Group();
+        group.setName("Test rest group api");
+        group.setDescription("Test rest group api description");
+        List<GroupMember> members = new ArrayList<GroupMember>();
+        GroupMember groupMember = new GroupMember();
+        groupMember.setContactName("Doe-John");
+        members.add(groupMember);
+        groupMember = new GroupMember();
+        groupMember.setContactName("Wall-John");
+        members.add(groupMember);
+        group.setMembers(members);
+        HttpResponseWrapper<RestResponse> response = groupApi.addGroup(group);
+        
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 201);
+        assertEquals(response.getResponseBody().getStatus(), "success");   
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "{\"groups\":{\"members\":[{\"contact\":\"Doe-John\"},{\"contact\":\"Wall-John\"}],\"groupname\":\"Test rest group api\",\"groupdesc\":\"Test rest group api description\"}}");
+    }  
     
     @Test
     public void addInvalidGroupNoMembers() throws CMCException {

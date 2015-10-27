@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Group model.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Group {
+public class Group extends GroupMembers {
 
     /**
      * Group name.
