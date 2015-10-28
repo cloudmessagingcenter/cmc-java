@@ -6,6 +6,7 @@ import com.telecomsys.cmc.exception.CMCException;
 import com.telecomsys.cmc.http.CmcHttpRequest;
 import com.telecomsys.cmc.http.HttpResponseWrapper;
 import com.telecomsys.cmc.model.Group;
+import com.telecomsys.cmc.model.GroupMembers;
 import com.telecomsys.cmc.response.GroupResponse;
 import com.telecomsys.cmc.response.RestResponse;
 import com.telecomsys.cmc.utils.StringUtils;
@@ -106,6 +107,33 @@ public class GroupApi extends CmcBaseApi {
 
         // Send the request to CMC.
         return httpClient.doGet(cmcRequest, GroupResponse.class);
+    }
+
+    /**
+     * Method to add group members using CMC REST API.
+     *
+     * @param groupName name of the group to which group members would be added.
+     * @param groupMembers group members to be added to the group.
+     * @return HttpResponseWrapper http response wrapper with the response.
+     * @throws CMCException CMC exception if errors.
+     */
+    public HttpResponseWrapper<RestResponse> addGroupMember(GroupMembers groupMembers, String groupName)
+            throws CMCException {
+
+        // TODO verify it with Saijee
+        groupName = "TEST%20REST%20GROUP%20API";
+
+        // Append the matrix parameters
+        StringBuilder sb = new StringBuilder();
+        sb.append(GROUPS_URL).append("/").append(groupName);
+        sb.append("/").append("members");
+
+        // Create the request with parameters.
+        CmcHttpRequest cmcRequest = new CmcHttpRequest(sb.toString());
+        cmcRequest.addBodyParameter("groupmembers", groupMembers);
+
+        // Send the request to CMC.
+        return httpClient.doPost(cmcRequest, RestResponse.class);
     }
 
 }
