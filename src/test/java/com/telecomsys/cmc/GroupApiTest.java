@@ -382,7 +382,7 @@ public class GroupApiTest {
     
     @Test
     public void addGroupMemberSingleMdn() throws CMCException {
-        stubFor(post(urlEqualTo("/groups/TEST%20REST%20GROUP%20API/members"))
+        stubFor(post(urlPathMatching("/groups/(.*)/members"))
                 .willReturn(aResponse()
                     .withStatus(201)
                     .withHeader("Content-Type", "application/json")
@@ -402,14 +402,14 @@ public class GroupApiTest {
         assertEquals(response.getResponseBody().getStatus(), "success");   
 
         // Verify the request
-        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups/TEST%20REST%20GROUP%20API/members")));
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlPathMatching("/groups/(.*)/members")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "{\"groupmembers\":{\"members\":[{\"mdn\":\"14102951866\"}]}}");
     }
     
     @Test
     public void addGroupMemberInvalidSingleMdn() throws CMCException {
-        stubFor(post(urlEqualTo("/groups/TEST%20REST%20GROUP%20API/members"))
+        stubFor(post(urlPathMatching("/groups/(.*)/members"))
                 .willReturn(aResponse()
                     .withStatus(404)
                     .withHeader("Content-Type", "application/json")
@@ -430,14 +430,14 @@ public class GroupApiTest {
         assertEquals(response.getResponseBody().getCode(), "7305"); 
 
         // Verify the request
-        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups/TEST%20REST%20GROUP%20API/members")));
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlPathMatching("/groups/(.*)/members")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "{\"groupmembers\":{\"members\":[{\"mdn\":\"14102951866\"}]}}");
     }
     
     @Test
     public void addGroupMemberMultipleMdns() throws CMCException {
-        stubFor(post(urlEqualTo("/groups/TEST%20REST%20GROUP%20API/members"))
+        stubFor(post(urlPathMatching("/groups/(.*)/members"))
                 .willReturn(aResponse()
                     .withStatus(201)
                     .withHeader("Content-Type", "application/json")
@@ -466,14 +466,14 @@ public class GroupApiTest {
         assertEquals(response.getResponseBody().getStatus(), "success");   
 
         // Verify the request
-        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups/TEST%20REST%20GROUP%20API/members")));
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlPathMatching("/groups/(.*)/members")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "{\"groupmembers\":{\"members\":[{\"mdn\":\"14102951866\"},{\"mdn\":\"14102804827\"},{\"mdn\":\"14102951927\"}]}}");
     }
     
     @Test
     public void addGroupMemberInvalidMultipleMdns() throws CMCException {
-        stubFor(post(urlEqualTo("/groups/TEST%20REST%20GROUP%20API/members"))
+        stubFor(post(urlPathMatching("/groups/(.*)/members"))
                 .willReturn(aResponse()
                     .withStatus(404)
                     .withHeader("Content-Type", "application/json")
@@ -503,14 +503,14 @@ public class GroupApiTest {
         assertEquals(response.getResponseBody().getCode(), "7305"); 
 
         // Verify the request
-        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups/TEST%20REST%20GROUP%20API/members")));
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlPathMatching("/groups/(.*)/members")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "{\"groupmembers\":{\"members\":[{\"mdn\":\"14102951866\"},{\"mdn\":\"14102804827\"},{\"mdn\":\"14102951927\"}]}}");
     }
     
     @Test
     public void addGroupMemberSingleContact() throws CMCException {
-        stubFor(post(urlEqualTo("/groups/TEST%20REST%20GROUP%20API/members"))
+        stubFor(post(urlPathMatching("/groups/(.*)/members"))
                 .willReturn(aResponse()
                     .withStatus(201)
                     .withHeader("Content-Type", "application/json")
@@ -530,14 +530,14 @@ public class GroupApiTest {
         assertEquals(response.getResponseBody().getStatus(), "success");   
 
         // Verify the request
-        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups/TEST%20REST%20GROUP%20API/members")));
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlPathMatching("/groups/(.*)/members")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "{\"groupmembers\":{\"members\":[{\"contact\":\"Doe-John\"}]}}");
     }
     
     @Test
     public void addGroupMemberInvalidSingleContact() throws CMCException {
-        stubFor(post(urlEqualTo("/groups/TEST%20REST%20GROUP%20API/members"))
+        stubFor(post(urlPathMatching("/groups/(.*)/members"))
                 .willReturn(aResponse()
                     .withStatus(404)
                     .withHeader("Content-Type", "application/json")
@@ -558,14 +558,14 @@ public class GroupApiTest {
         assertEquals(response.getResponseBody().getCode(), "7304"); 
 
         // Verify the request
-        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups/TEST%20REST%20GROUP%20API/members")));
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlPathMatching("/groups/(.*)/members")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "{\"groupmembers\":{\"members\":[{\"contact\":\"Doe-John\"}]}}");
     }
     
     @Test
     public void addGroupMemberMultipleContacts() throws CMCException {
-        stubFor(post(urlEqualTo("/groups/TEST%20REST%20GROUP%20API/members"))
+        stubFor(post(urlPathMatching("/groups/(.*)/members"))
                 .willReturn(aResponse()
                     .withStatus(201)
                     .withHeader("Content-Type", "application/json")
@@ -588,14 +588,14 @@ public class GroupApiTest {
         assertEquals(response.getResponseBody().getStatus(), "success");   
 
         // Verify the request
-        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups/TEST%20REST%20GROUP%20API/members")));
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlPathMatching("/groups/(.*)/members")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "{\"groupmembers\":{\"members\":[{\"contact\":\"Doe-John\"},{\"contact\":\"Wall-John\"}]}}");
     }
     
     @Test
     public void addGroupMemberInvalidMultipleContacts() throws CMCException {
-        stubFor(post(urlEqualTo("/groups/TEST%20REST%20GROUP%20API/members"))
+        stubFor(post(urlPathMatching("/groups/(.*)/members"))
                 .willReturn(aResponse()
                     .withStatus(404)
                     .withHeader("Content-Type", "application/json")
@@ -619,7 +619,7 @@ public class GroupApiTest {
         assertEquals(response.getResponseBody().getCode(), "7304"); 
 
         // Verify the request
-        List<LoggedRequest> requests = findAll(postRequestedFor(urlMatching("/groups/TEST%20REST%20GROUP%20API/members")));
+        List<LoggedRequest> requests = findAll(postRequestedFor(urlPathMatching("/groups/(.*)/members")));
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0).getBodyAsString(), "{\"groupmembers\":{\"members\":[{\"contact\":\"Doe-John\"},{\"contact\":\"Wall-John\"}]}}");
     }
