@@ -625,6 +625,182 @@ public class GroupApiTest {
     }
     
     @Test
+    public void deleteGroupSingleMdnMember() throws CMCException {
+        stubFor(delete(urlMatching("/groups/(.*)/members/(.*)"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\": {\"status\": \"success\"}}")));
+        
+        String groupName = "Test rest group api";
+        String members = "14102951866";
+        HttpResponseWrapper<RestResponse> response = groupApi.deleteGroupMember(groupName, members);
+        
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 200);
+        assertEquals(response.getResponseBody().getStatus(), "success");   
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(deleteRequestedFor(urlMatching("/groups/(.*)/members/(.*)")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");
+    }
+    
+    @Test
+    public void deleteGroupMultipleMdnMembers() throws CMCException {
+        stubFor(delete(urlMatching("/groups/(.*)/members/(.*)"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\": {\"status\": \"success\"}}")));
+        
+        String groupName = "Test rest group api";
+        StringBuffer members = new StringBuffer();
+        members.append("14102951866");
+        members.append(",");
+        members.append("14102951866");
+        HttpResponseWrapper<RestResponse> response = groupApi.deleteGroupMember(groupName, members.toString());
+        
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 200);
+        assertEquals(response.getResponseBody().getStatus(), "success");   
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(deleteRequestedFor(urlMatching("/groups/(.*)/members/(.*)")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");
+    }
+    
+    @Test
+    public void deleteGroupSingleContactMember() throws CMCException {
+        stubFor(delete(urlMatching("/groups/(.*)/members/(.*)"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\": {\"status\": \"success\"}}")));
+        
+        String groupName = "Test rest group api";
+        String members = "Doe-John";
+        HttpResponseWrapper<RestResponse> response = groupApi.deleteGroupMember(groupName, members);
+        
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 200);
+        assertEquals(response.getResponseBody().getStatus(), "success");   
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(deleteRequestedFor(urlMatching("/groups/(.*)/members/(.*)")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");
+    }
+    
+    @Test
+    public void deleteGroupInvalidSingleContactMember() throws CMCException {
+        stubFor(delete(urlMatching("/groups/(.*)/members/(.*)"))
+                .willReturn(aResponse()
+                .withStatus(404)
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"7304\",\"message\":\"Group members for group with name TEST REST GROUP API was not updated as some or all of the contacts do not exist.\"}}")));
+            
+        String groupName = "Test rest group api";
+        String members = "Doe-John";
+        HttpResponseWrapper<RestResponse> response = groupApi.deleteGroupMember(groupName, members);
+        
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 404);
+        assertEquals(response.getResponseBody().getCode(), "7304");
+        assertEquals(response.getResponseBody().getStatus(), "fail");   
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(deleteRequestedFor(urlMatching("/groups/(.*)/members/(.*)")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");
+    }
+    
+    @Test
+    public void deleteGroupMultipleContactMembers() throws CMCException {
+        stubFor(delete(urlMatching("/groups/(.*)/members/(.*)"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\": {\"status\": \"success\"}}")));
+        
+        String groupName = "Test rest group api";
+        StringBuffer members = new StringBuffer();
+        members.append("Doe-John");
+        members.append(",");
+        members.append("Wall-John");
+        HttpResponseWrapper<RestResponse> response = groupApi.deleteGroupMember(groupName, members.toString());
+        
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 200);
+        assertEquals(response.getResponseBody().getStatus(), "success");   
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(deleteRequestedFor(urlMatching("/groups/(.*)/members/(.*)")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");
+    }
+    
+    @Test
+    public void deleteGroupMembers() throws CMCException {
+        stubFor(delete(urlMatching("/groups/(.*)/members/(.*)"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\": {\"status\": \"success\"}}")));
+        
+        String groupName = "Test rest group api";
+        StringBuffer members = new StringBuffer();
+        members.append("14102951866");
+        members.append(",");
+        members.append("14102951866");
+        members.append(",");
+        members.append("Doe-John");
+        members.append(",");
+        members.append("Wall-John");
+        HttpResponseWrapper<RestResponse> response = groupApi.deleteGroupMember(groupName, members.toString());
+        
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 200);
+        assertEquals(response.getResponseBody().getStatus(), "success");   
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(deleteRequestedFor(urlMatching("/groups/(.*)/members/(.*)")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");
+    }
+    
+    @Test
+    public void deleteInvalidGroupMembers() throws CMCException {
+        stubFor(delete(urlMatching("/groups/(.*)/members/(.*)"))
+                .willReturn(aResponse()
+                .withStatus(404)
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"7304\",\"message\":\"Group members for group with name TEST REST GROUP API was not updated as some or all of the contacts do not exist.\"}}")));
+            
+        String groupName = "Test rest group api";
+        StringBuffer members = new StringBuffer();
+        members.append("14102951866");
+        members.append(",");
+        members.append("14102951866");
+        members.append(",");
+        members.append("Doe-John");
+        members.append(",");
+        members.append("Wall-John");
+        HttpResponseWrapper<RestResponse> response = groupApi.deleteGroupMember(groupName, members.toString());
+        
+        // Verify the response.
+        assertEquals(response.getHttpStatusCode(), 404);
+        assertEquals(response.getResponseBody().getCode(), "7304");
+        assertEquals(response.getResponseBody().getStatus(), "fail");   
+
+        // Verify the request
+        List<LoggedRequest> requests = findAll(deleteRequestedFor(urlMatching("/groups/(.*)/members/(.*)")));
+        assertEquals(requests.size(), 1);
+        assertEquals(requests.get(0).getBodyAsString(), "");
+    }
+    
+    @Test
     public void deleteSingleValidGroup() throws CMCException {
         stubFor(delete(urlMatching("/groups/(.*)"))
                 .willReturn(aResponse()

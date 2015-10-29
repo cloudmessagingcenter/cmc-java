@@ -141,4 +141,34 @@ public class GroupApi extends CmcBaseApi {
         return httpClient.doPost(cmcRequest, RestResponse.class);
     }
 
+    /**
+     * Method to delete group members using CMC REST API.
+     *
+     * @param groupName name of the group to which group members would be added.
+     * @param members list of members to be removed which are comma separated.
+     * @return HttpResponseWrapper http response wrapper with the response.
+     * @throws CMCException CMC exception if errors.
+     */
+    public HttpResponseWrapper<RestResponse> deleteGroupMember(String groupName, String members) throws CMCException {
+
+        try {
+            groupName = URLEncoder.encode(groupName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        // Append the matrix parameters
+        StringBuilder sb = new StringBuilder();
+        sb.append(GROUPS_URL).append("/").append(groupName);
+        sb.append("/").append("members");
+        sb.append("/").append(members);
+
+        // Create the request with parameters.
+        CmcHttpRequest cmcRequest = new CmcHttpRequest(sb.toString());
+
+        // Send the request to CMC.
+        return httpClient.doDelete(cmcRequest, RestResponse.class);
+    }
+
+
 }
