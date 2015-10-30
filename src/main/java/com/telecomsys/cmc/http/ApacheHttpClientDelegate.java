@@ -179,7 +179,7 @@ public class ApacheHttpClientDelegate implements HttpClientDelegate {
                 httpMethod = new HttpGet(escapeURI(baseUri, request.getPath(), getParams));
                 break;
             case HttpPost.METHOD_NAME:
-                HttpPost post = new HttpPost(baseUri + request.getPath());
+                HttpPost post = new HttpPost(escapeURI(baseUri, request.getPath(), null));
                 ObjectWriter postWriter = jsonMapper.writer().withRootName(request.getMessageWrapperName());
                 String jsonPostParams = postWriter.writeValueAsString(request.getBodyParameters());
                 StringEntity postEntity = new StringEntity(jsonPostParams, ContentType.APPLICATION_JSON);
@@ -187,7 +187,7 @@ public class ApacheHttpClientDelegate implements HttpClientDelegate {
                 httpMethod = post;
                 break;
             case HttpPut.METHOD_NAME:
-                HttpPut put = new HttpPut(baseUri + request.getPath());
+                HttpPut put = new HttpPut(escapeURI(baseUri, request.getPath(), null));
                 ObjectWriter putWriter = jsonMapper.writer().withRootName(request.getMessageWrapperName());
                 String jsonPutParams = putWriter.writeValueAsString(request.getBodyParameters());
                 StringEntity putEntity = new StringEntity(jsonPutParams, ContentType.APPLICATION_JSON);
@@ -329,7 +329,7 @@ public class ApacheHttpClientDelegate implements HttpClientDelegate {
 
         // Append the path in the passed in unescapedURI to the extraPath as it overwrites the path in the unescapedURI
         // when we do a setPath.
-        if (queryParams.size() > 0) {
+        if (queryParams != null && queryParams.size() > 0) {
             return new URIBuilder(unescapedURI).setPath(uri.getPath() + extraPath).addParameters(queryParams).build();
         } else {
             return new URIBuilder(unescapedURI).setPath(uri.getPath() + extraPath).build();

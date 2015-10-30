@@ -1,7 +1,5 @@
 package com.telecomsys.cmc.api;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
 import com.telecomsys.cmc.exception.CMCException;
@@ -122,12 +120,6 @@ public class GroupApi extends CmcBaseApi {
     public HttpResponseWrapper<RestResponse> addGroupMember(GroupMembers groupMembers, String groupName)
             throws CMCException {
 
-        try {
-            groupName = URLEncoder.encode(groupName, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
         // Append the matrix parameters
         StringBuilder sb = new StringBuilder();
         sb.append(GROUPS_URL).append("/").append(groupName);
@@ -151,12 +143,6 @@ public class GroupApi extends CmcBaseApi {
      */
     public HttpResponseWrapper<RestResponse> deleteGroupMember(String groupName, String members) throws CMCException {
 
-        try {
-            groupName = URLEncoder.encode(groupName, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
         // Append the matrix parameters
         StringBuilder sb = new StringBuilder();
         sb.append(GROUPS_URL).append("/").append(groupName);
@@ -169,6 +155,5 @@ public class GroupApi extends CmcBaseApi {
         // Send the request to CMC.
         return httpClient.doDelete(cmcRequest, RestResponse.class);
     }
-
 
 }
