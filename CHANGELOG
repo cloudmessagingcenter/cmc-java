@@ -1,5 +1,9 @@
 === 1.1.1 2015-10-27
 
+* Add support for groups.
+
+=== 1.1.1 2015-10-27
+
 * Fix issue with query parameters not being handled correctly.
 
 === 1.1.0 2015-10-25
