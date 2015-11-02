@@ -7,7 +7,7 @@ You can sign up for a Cloud Messaging Center (CMC) REST API account at https://w
 Prerequisites:
 ============
 
-Java 1.7 and later
+Java 1.7 and later.
 
 Installation
 ============
