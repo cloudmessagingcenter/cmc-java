@@ -104,7 +104,28 @@ public class MessagingApiTest {
             assertEquals(error.getMessage(), "Your message failed: Invalid from address.");
         }
     }
-    
+
+    @Test
+    public void rmiConnectionDownTest() throws CMCException {
+        stubFor(post(urlEqualTo("/messages"))
+                .willReturn(aResponse()
+                    .withStatus(500)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"response\":{\"status\":\"fail\",\"code\":\"1001\",\"message\":\"Your message failed: Invalid from address.\"}}")));        
+        
+        try { 
+            List<String> destinations = new ArrayList<String>();
+            destinations.add("4102804827");
+            Message message = new Message(destinations, REST_CONNECTION_KEYWORD, "Test message");
+            messagingApi.sendMessage(message);
+        } catch (CMCClientException cmex) {
+            RestResponse error = cmex.getError();
+            assertEquals(error.getStatus(), "fail");
+            assertEquals(error.getCode(), "1001");
+            assertEquals(error.getMessage(), "Your message failed: sent error.");
+        }
+    }
+
     @Test
     public void sendMessagesSingleDestination() throws CMCException {
         stubFor(post(urlEqualTo("/messages"))

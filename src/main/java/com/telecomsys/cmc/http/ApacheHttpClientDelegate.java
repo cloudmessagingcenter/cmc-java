@@ -251,7 +251,7 @@ public class ApacheHttpClientDelegate implements HttpClientDelegate {
 
             // Parse based on the HTTP response.
             if (HttpStatus.SC_OK == statusCode || HttpStatus.SC_CREATED == statusCode
-                    || statusCode == HttpStatus.SC_NOT_FOUND) {
+                    || statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
                 T responseBody = jsonMapper.readValue(jsonStream, responseClass);
                 return HttpResponseWrapper.create(statusCode, responseBody);
             } else if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
