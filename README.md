@@ -41,9 +41,9 @@ If you're planning on using ProGuard, make sure that you exclude the CMC binding
 API Usage
 =========
 
-REST URL for trial: https://www.cloudmessagingtrial.com/rest/v1
+REST URL for trial: https://www.comtechcmc-trial.com/rest/v1
 
-REST URL for production: https://www.cloudmessaging.com/rest/v1
+REST URL for production: https://www.cloudmessagingcenter.com/rest/v1
 
 *	Import the classes into your code. For example,
 
@@ -55,10 +55,10 @@ To send a message:
 ------------------
 
 *	Create the API end point using the REST URL and the account ID (ACCOUNTID) and authentication token (AUTHTOKEN) you 
-    receive in the REST sign-up email. For example to create the messaging end point:
+  receive in the REST sign-up email. For example to create the messaging end point for trial:
     
 ```java
-MessagingApi messagingApi = new MessagingApi("https://www.cloudmessagingtrial.com/rest/v1", ACCOUNTID, AUTHTOKEN);
+MessagingApi messagingApi = new MessagingApi("https://www.comtechcmc-trial.com/rest/v1", ACCOUNTID, AUTHTOKEN);
 ```
 
 *	Send the message to the destinations using the REST keyword (KEYWORD) receive in the REST sign-up email.
